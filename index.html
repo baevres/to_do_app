@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <h1>Todo List</h1>
+            <form class="add-new-item">
+                <input type="text" id="add-input" class="form-control" placeholder="Add new Todo">
+                <!-- <label for="add-input" class="input-label">Add new Todo</label> -->
+                <button type="submit" id="add-todo-button" class="btn btn-primary">ADD</button>
+            </form>
+
+            <ul class="list-group">
+                <li class="">
+                    <div class="start">
+                        <input id="firstCheckbox" class="checkbox" type="checkbox">
+                        <label class="form-check-label" for="firstCheckbox">Test 1</label>
+                    </div>
+                    <button name="delete" class="btn btn-outline-danger btn-sm">DELETE</button>
+                </li>
+                <li >
+                    <div class="start">
+                        <input id="secondCheckbox" class="checkbox" type="checkbox" checked>
+                        <label class="form-check-label checked" for="secondCheckbox">Test 2</label>
+                    </div>
+                    <button name="delete" class="btn btn-outline-danger btn-sm">DELETE</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
