@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="content">
+        <h1>Todo List</h1>
+        <form class="add-new-item">
+            <input type="text" id="add-input" class="add-input">
+            <label for="add-input" class="input-label">New todo</label>
+            <button type="submit" class="add-btn">ADD</button>
+        </form>
+
+        <ul class="list-group">
+            <li class="">
+                <div class="start">
+                    <input id="firstCheckbox" class="checkbox" type="checkbox">
+                    <label class="form-check-label" for="firstCheckbox">Test 1</label>
+                </div>
+                <button name="delete" class="delete-btn">DELETE</button>
+            </li>
+            <li >
+                <div class="start">
+                    <input id="secondCheckbox" class="checkbox" type="checkbox" checked>
+                    <label class="form-check-label checked" for="secondCheckbox">Test 2</label>
+                </div>
+                <button name="delete" class="delete-btn">DELETE</button>
+            </li>
+        </ul>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
