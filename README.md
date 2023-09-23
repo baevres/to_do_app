@@ -20,6 +20,7 @@ This is a straightforward Todo web application that allows you to manage your ta
 5. Your tasks will be saved locally and will persist even after you close the browser.
 
 **Development**
+
 If you want to make changes or contribute to this project, follow these steps:
 1. Install the project dependencies using npm install.
 2. Make your changes to the source files in the src directory.
