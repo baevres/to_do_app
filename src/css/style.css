@@ -103,6 +103,10 @@ li .start {
     font-size: 18px;
 }
 
+li .start div:hover {
+    cursor: pointer;
+}
+
 .checkbox{
     display: block;
     transform: scale(1.9);

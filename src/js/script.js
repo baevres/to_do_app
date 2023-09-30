@@ -1,26 +1,25 @@
 "use-strict";
 
-import MainData from "./services/mainData";
-
-import todoToggle from "./modules/todoToggle";
-import deleteTodo from "./modules/deleteTodo";
-import addTodo from "./modules/addTodo";
+import MainData from "./services/mainData.js"
 
 document.addEventListener('DOMContentLoaded', () => {
-    const listContainer = document.querySelector('.list-container'),
-          addFormLocator = '.add-new-item';
-    const mainData = new MainData();
+    const listContainerLocator = '.list-container',
+          addFormLocator = '.add-new-item',
+          deleteBtnLocator = '.delete-btn',
+          checkboxLocator = '[type=checkbox]'
+    
+    const mainData = new MainData(listContainerLocator, addFormLocator)
 
-    // render
-    mainData.setDefaultData();
-    mainData.render(listContainer);
+    // first render
+    mainData.setDefaultData()
+    mainData.render()
 
-    // checking
-    todoToggle(mainData, listContainer);
+    // toggle
+    mainData.modifyTodo(checkboxLocator, 'toggle')
 
     // delete
-    deleteTodo(mainData, listContainer);
+    mainData.modifyTodo(deleteBtnLocator, 'delete')
 
     // add todo
-    addTodo(mainData, addFormLocator, listContainer);
+    mainData.addTodo()
 });
