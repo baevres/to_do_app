@@ -1,25 +1,23 @@
-"use-strict";
+'use-strict'
 
-import MainData from "./services/mainData.js"
+import MainData from './services/mainData.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-    const listContainerLocator = '.list-container',
-          addFormLocator = '.add-new-item',
-          deleteBtnLocator = '.delete-btn',
-          checkboxLocator = '[type=checkbox]'
-    
-    const mainData = new MainData(listContainerLocator, addFormLocator)
+  const mainData = new MainData()
 
-    // first render
-    mainData.setDefaultData()
-    mainData.render()
+  // first render
+  mainData.setDefaultData()
+  mainData.render()
 
-    // toggle
-    mainData.modifyTodo(checkboxLocator, 'toggle')
+  // toggle
+  mainData.modifyTodo('toggle')
 
-    // delete
-    mainData.modifyTodo(deleteBtnLocator, 'delete')
+  // delete
+  mainData.modifyTodo('delete')
 
-    // add todo
-    mainData.addTodo()
-});
+  // add todo
+  mainData.addTodo()
+
+  // edit todo
+  mainData.editTodo()
+})
