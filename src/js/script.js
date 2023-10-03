@@ -1,23 +1,23 @@
 'use-strict'
 
-import MainData from './services/mainData.js'
+import Router from './services/router.js'
+import todoPage from './todoPage.js'
+
+const router = new Router('.app')
+
+window.route = router.route
+window.onpopstate = router.handleLocation
+router.handleLocation(todoPage)
 
 document.addEventListener('DOMContentLoaded', () => {
-  const mainData = new MainData()
+  const links = document.querySelectorAll('.menu a')
+  links.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        e.preventDefault()
 
-  // first render
-  mainData.setDefaultData()
-  mainData.render()
-
-  // toggle
-  mainData.modifyTodo('toggle')
-
-  // delete
-  mainData.modifyTodo('delete')
-
-  // add todo
-  mainData.addTodo()
-
-  // edit todo
-  mainData.editTodo()
+        router.route(e, todoPage)
+      }
+    })
+  })
 })

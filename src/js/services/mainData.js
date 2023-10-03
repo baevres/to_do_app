@@ -76,16 +76,26 @@ export default class MainData {
       let newItem = []
 
       if (currentTarget) {
-        elemList.forEach((elem, i) => {
+        elemList.forEach((elem) => {
           if (currentTarget === elem) {
             if (action === 'delete') {
-              newItem = oldData.splice(i, 1)
-              newItem = newItem[0]
+              const liParentElem = elem.parentElement
+              const elemId = liParentElem.querySelector(this.checkboxLocator).id
+              const index = oldData.indexOf(
+                oldData.find((item) => elemId === item.id),
+              )
+
+              newItem = oldData.splice(index, 1)[0]
               newData = [...oldData]
             } else if (action === 'toggle') {
-              oldData[i].checked = elem.checked
+              const elemId = elem.id
+              const index = oldData.indexOf(
+                oldData.find((item) => elemId === item.id),
+              )
+
+              oldData[index].checked = elem.checked
               newData.push(...oldData)
-              newItem = oldData[i]
+              newItem = oldData[index]
             }
 
             this.setNewData(newData)
@@ -98,39 +108,33 @@ export default class MainData {
 
   #generateEditForm = ({ id, value }) => {
     const form = document.createElement('form')
-    const checkbox = document.createElement('input')
     const input = document.createElement('input')
     const div = document.createElement('div')
     const cancelButton = document.createElement('button')
     const saveButton = document.createElement('button')
 
     form.classList.add('edit-item-form')
-
-    checkbox.setAttribute('type', 'checkbox')
-    checkbox.setAttribute('id', id)
-    checkbox.classList.add('checkbox')
-    checkbox.style.visibility = 'hidden'
+    form.setAttribute('id', id)
 
     input.classList.add('edit-item-input')
     input.setAttribute('type', 'text')
     input.value = value
 
-    cancelButton.classList.add('btn', 'cancel-btn', 'delete-btn')
+    cancelButton.classList.add('btn', 'cancel-btn')
     cancelButton.textContent = 'cancel'
 
     saveButton.classList.add('btn', 'save-btn')
     saveButton.textContent = 'save'
 
     div.append(cancelButton, saveButton)
-    form.append(checkbox, input, div)
+    form.append(input, div)
 
     return form
   }
 
-  submitEditForm = (oldLiItem, i) => {
+  submitEditForm = (oldLiItem, id) => {
     const editForms = document.querySelectorAll(this.editFormLocator)
 
-    const oldData = this.getData()
     let newData = []
     let newItem = []
 
@@ -144,17 +148,25 @@ export default class MainData {
         e.preventDefault()
         const target = e.target
 
-        if (target) {
+        if (target && form.id === id) {
           if (target.classList.contains('cancel-btn')) {
             deleteForm(oldLiItem, form)
           } else if (target.classList.contains('save-btn')) {
+            const oldData = this.getData()
             const input = form.querySelector(this.editFormInput)
-            oldData[i].value = input.value
-            newData.push(...oldData)
-            newItem = this.#generateNewItem(oldData[i])
 
-            this.setNewData(newData)
-            deleteForm(newItem, form)
+            if (input.value !== '') {
+              let index = oldData.indexOf(
+                oldData.find((item) => item.id === id),
+              )
+              oldData[index].value = input.value
+
+              newData.push(...oldData)
+              newItem = this.#generateNewItem(oldData[index])
+
+              this.setNewData(newData)
+              deleteForm(newItem, form)
+            }
           }
         }
       })
@@ -167,19 +179,20 @@ export default class MainData {
       const elemList = document.querySelectorAll(this.itemValueLocator)
 
       if (currentTarget) {
-        elemList.forEach((item, i) => {
+        elemList.forEach((item) => {
           if (currentTarget === item) {
-            const oldItem = this.getData().find(
-              ({ value }) => value === item.textContent,
-            )
-            const editForm = this.#generateEditForm(oldItem)
             const parentLiElement = item.parentElement.parentElement
+            const elemId = parentLiElement.querySelector(
+              this.checkboxLocator,
+            ).id
+            const oldItem = this.getData().find(({ id }) => id === elemId)
+            const editForm = this.#generateEditForm(oldItem)
 
             parentLiElement.before(editForm)
             this.ulParentElement.removeChild(parentLiElement)
             editForm.querySelector(this.editFormInput).focus()
 
-            this.submitEditForm(parentLiElement, i)
+            this.submitEditForm(parentLiElement, elemId)
           }
         })
       }
