@@ -3,7 +3,14 @@
 import Router from './services/router.js'
 import todoPage from './todoPage.js'
 
-const router = new Router('.app')
+const routes = {
+  '/': { view: './pages/todo.html', title: 'ToDo List' },
+  '/login': { view: './pages/logIn.html', title: 'Log in' },
+  '/signin': { view: './pages/signIn.html', title: 'Sign in' },
+  404: { view: './pages/404.html', title: 'Not Found' },
+}
+
+const router = new Router('.app', routes)
 
 window.route = router.route
 window.onpopstate = router.handleLocation

@@ -1,22 +1,18 @@
 class Router {
-  constructor(locator) {
+  constructor(locator, routes) {
     this.locator = locator
+    this.routes = routes
   }
 
-  routers = {
-    '/': { view: './pages/todo.html', title: 'ToDo List' },
-    '/login': { view: './pages/logIn.html', title: 'Log in' },
-    '/signin': { view: './pages/signIn.html', title: 'Sign in' },
-    404: { view: './pages/404.html', title: 'Not Found' },
-  }
+  mainPath = '/'
 
   checkPath = () => {
     const path = window.location.pathname
-    if (!this.routers[path]) {
-      return this.routers[404]
+    if (!this.routes[path]) {
+      return this.routes[404]
     }
 
-    return this.routers[path]
+    return this.routes[path]
   }
 
   handleLocation = async (func) => {
@@ -26,7 +22,7 @@ class Router {
     const html = await fetch(view).then((data) => data.text())
     document.querySelector(this.locator).innerHTML = html
 
-    if (view.indexOf('todo') > -1) {
+    if (view === this.routes[this.mainPath].view) {
       func()
     }
   }
