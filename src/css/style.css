@@ -22,6 +22,12 @@
   color: rgb(62, 106, 250);
 }
 
+.menu a.selected-link {
+  color: rgb(62, 106, 250);
+  cursor: default;
+  pointer-events: none;
+}
+
 .container {
   max-width: 1140px;
   margin: 0 auto;
@@ -54,21 +60,24 @@ h1:hover {
 .add-new-item {
   position: relative;
   margin-top: 15px;
-  display: flex;
-  justify-content: space-between;
-  height: 50px;
+  display: grid;
+  grid-template-columns: 525px 60px;
+  grid-template-rows: 55px;
+  grid-auto-rows: 55px;
+  column-gap: 10px;
   position: relative;
 }
 
 .add-todo-input {
   display: block;
   font-size: 18px;
+  width: 92%;
   cursor: text;
-  width: 82%;
   padding: 0 15px;
   border: 2px solid rgba(117, 117, 117, 0.1);
   border-radius: 5px;
   z-index: 1;
+  transition: 0.3s all;
 }
 
 .input-label {
@@ -98,7 +107,7 @@ h1:hover {
 .add-btn,
 .save-btn {
   height: 65%;
-  width: 10%;
+  width: 90%;
   align-self: center;
   font-size: 13px;
   background-color: rgb(62, 106, 250);
@@ -110,6 +119,64 @@ h1:hover {
 
 .btn:hover {
   cursor: pointer;
+}
+
+.filter-wrapper {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  align-items: center;
+  position: relative;
+}
+
+.filter-btns {
+  justify-self: end;
+}
+
+.filter-btn {
+  color: rgb(62, 106, 250);
+  background: none;
+  border: none;
+  font-size: 14px;
+  margin-left: 15px;
+}
+
+.filter-btn:hover {
+  text-decoration: underline;
+}
+
+.selected {
+  text-decoration: underline;
+  color: rgba(62, 106, 250, 0.6);
+}
+
+.selected:hover {
+  cursor: default;
+}
+
+.check-all {
+  position: relative;
+}
+
+.check-all::after {
+  content: '';
+  display: block;
+  width: 47%;
+  height: 1.5px;
+  position: absolute;
+  top: 30px;
+  left: 12px;
+  background-color: black;
+}
+
+.check-all div {
+  padding-left: 50px;
+  font-size: 14px;
+}
+
+#selectAllCheckbox {
+  top: 23%;
+  left: 18px;
 }
 
 ul {
@@ -140,7 +207,7 @@ li .start div:hover {
   transform: scale(1.9);
   cursor: pointer;
   position: absolute;
-  top: 25%;
+  top: 27%;
   left: 8px;
 }
 
@@ -181,11 +248,12 @@ li .start div:hover {
 }
 
 .edit-item-input {
-  padding: 0 15px;
+  padding: 0 10px;
   border: 2px solid rgba(117, 117, 117, 0.5);
   border-radius: 5px;
   font-size: 18px;
   cursor: text;
+  transition: 0.3s all;
 }
 
 .login,
@@ -193,8 +261,8 @@ li .start div:hover {
   padding-top: 20px;
   padding-bottom: 20px;
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  grid-auto-rows: 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-rows: auto;
   row-gap: 35px;
   align-content: center;
   position: relative;
@@ -202,8 +270,8 @@ li .start div:hover {
   width: 60%;
 }
 
-.login div,
-.registration div {
+.login > div,
+.registration > div {
   margin: 0 auto;
   width: 60%;
   position: relative;
@@ -214,6 +282,14 @@ li .start div:hover {
   display: block;
   width: 92%;
   height: 40px;
+}
+
+.login input.error,
+.registration input.error,
+.add-new-item input.error,
+.edit-item-form input.error {
+  border-color: rgba(250, 70, 100, 0.7);
+  outline-color: rgb(250, 70, 100);
 }
 
 .login label,
@@ -227,4 +303,20 @@ li .start div:hover {
 .registration .save-btn {
   justify-self: center;
   margin-left: 0;
+}
+
+.error-message {
+  margin-top: 10px;
+  margin-left: 8px;
+  display: block;
+  color: rgb(250, 70, 100);
+  font-size: 13px;
+}
+
+.list-container .error-message {
+  margin-left: 40px;
+}
+
+.container > .error-message {
+  text-align: center;
 }
