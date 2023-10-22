@@ -305,6 +305,12 @@ li .start div:hover {
   margin-left: 0;
 }
 
+.login-btn {
+  display: grid;
+  grid-template-rows: auto;
+  justify-content: center;
+}
+
 .error-message {
   margin-top: 10px;
   margin-left: 8px;
@@ -317,6 +323,8 @@ li .start div:hover {
   margin-left: 40px;
 }
 
-.container > .error-message {
+.container > .error-message,
+.login-btn > .error-message {
+  margin-left: 0;
   text-align: center;
 }

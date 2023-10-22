@@ -53,6 +53,12 @@ const signupPage = () => {
     inputs.forEach((field) => {
       validateField(field)
     })
+
+    if (errors.length <= 0) {
+      console.log('Success')
+    } else {
+      console.log('Failure')
+    }
   })
 }
 

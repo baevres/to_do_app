@@ -33,9 +33,13 @@ class LoginPage {
     const emailField = document.querySelector('#email')
     const passwordField = document.querySelector('#password')
     const form = document.querySelector('form')
+    const button = document.querySelector('button')
 
     inputs.forEach((field) => {
       field.addEventListener('blur', () => {
+        this.validateField(field)
+      })
+      field.addEventListener('input', () => {
         this.validateField(field)
       })
     })
@@ -47,8 +51,8 @@ class LoginPage {
         this.validateField(field)
       })
 
+      const formValidator = new FieldValidator(button)
       if (this.errors.length <= 0) {
-        const formValidator = new FieldValidator(form)
         const result = this.userVerification.verifyUser(
           emailField.value,
           passwordField.value,
@@ -62,6 +66,10 @@ class LoginPage {
           this.setLoggedIn(result)
           window.location.reload()
         }
+      } else {
+        console.log('error')
+        formValidator.toggleError(true, 'Unresolved errors')
+        formValidator.renderErrors()
       }
     })
   }
