@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const port = process.env.PORT || 5500
+const opn = require('opn')
 
 const app = express()
 
@@ -12,4 +13,5 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
   console.log(`server running on http://127.0.0.1:${port}`)
+  opn(`http://127.0.0.1:${port}`)
 })

@@ -18,6 +18,12 @@ const todoPage = () => {
 
   // edit todo
   mainData.editTodo()
+
+  // select/unselect all
+  mainData.selectAll()
+
+  // filter
+  mainData.setFilter()
 }
 
 export default todoPage
