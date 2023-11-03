@@ -1,6 +1,10 @@
-import MainData from './services/mainData.js'
+import todoPageView from './todoPageView.js'
 
-const todoPage = () => {
+import MainData from '../../services/mainData.js'
+
+const todoScript = () => {
+  todoPageView()
+
   const mainData = new MainData()
 
   // first render
@@ -26,4 +30,4 @@ const todoPage = () => {
   mainData.setFilter()
 }
 
-export default todoPage
+export default todoScript

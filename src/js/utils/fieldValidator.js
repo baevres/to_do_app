@@ -59,24 +59,63 @@ class FieldValidator {
   }
 
   getErrors = () => {
-    return [...this.errors, ...this.passwordErrors]
+    if (typeof this.passwordErrors === 'string') {
+      return [...this.errors, this.passwordErrors]
+    } else return [...this.errors, ...this.passwordErrors]
   }
 
   validateField(func, value, errorMessage = '', options = {}) {
-    switch (func) {
-      case 'email':
-        this.toggleError(!validator.isEmail(value), errorMessage)
-        break
-      case 'required':
+    if (value) {
+      switch (func) {
+        case 'email':
+          this.toggleError(!validator.isEmail(value), errorMessage)
+          break
+        case 'required':
+          this.toggleError(
+            validator.isEmpty(value, { ignore_whitespace: true }),
+            errorMessage,
+          )
+          break
+        case 'password':
+          this.passwordErrors = this.validatePassword(value, options)
+          break
+        case 'range':
+          value = +value
+          if (typeof value === 'number' && value > 0) {
+            const { min, minError, max, maxError } = options
+            this.toggleError(value < min, minError)
+            this.toggleError(value > max, maxError)
+          } else
+            this.toggleError(true, 'Should be a valid number greater than 0')
+          break
+        case 'link':
+          this.toggleError(
+            !/((https?|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/.test(
+              value,
+            ),
+            errorMessage,
+          )
+          break
+        case 'tel':
+          if (!/[a-zA-Z]/.test(value)) {
+            if (value.length >= 8) {
+              this.toggleError(
+                !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(value),
+                errorMessage,
+              )
+            } else this.toggleError(true, 'Too short number')
+          } else this.toggleError(true, 'Should not contain letters')
+          break
+        default:
+          null
+      }
+    } else {
+      if (func === 'required') {
         this.toggleError(
           validator.isEmpty(value, { ignore_whitespace: true }),
           errorMessage,
         )
-        break
-      case 'password':
-        this.passwordErrors = this.validatePassword(value, options)
-      default:
-        null
+      }
     }
   }
 
@@ -95,7 +134,7 @@ class FieldValidator {
       }
 
       allErrors.forEach((error) => {
-        this.errorWrapper.innerHTML += error + '<br/>'
+        this.errorWrapper.innerHTML += error + ' '
       })
     } else {
       this.field.classList.remove('error')

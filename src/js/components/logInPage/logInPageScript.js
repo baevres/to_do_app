@@ -1,12 +1,14 @@
-import UserVerification from './services/userVerification.js'
-import FieldValidator from './utils/fieldValidator.js'
+import loginPageView from './loginPageView.js'
 
-class LoginPage {
+import UserVerification from '../../services/userVerification.js'
+import FieldValidator from '../../utils/fieldValidator.js'
+
+class LoginPageScript {
   userVerification = new UserVerification()
   errors = []
 
-  validateField = (field) => {
-    const fieldValidator = new FieldValidator(field)
+  validateField = (field, parent, deleteForm = false) => {
+    const fieldValidator = new FieldValidator(field, parent)
     const value = field.value
 
     if (field.id === 'email') {
@@ -24,31 +26,36 @@ class LoginPage {
       fieldValidator.validateField('required', value, 'The field is required')
     }
 
+    if (deleteForm) {
+      fieldValidator.removeErrorWrapper()
+    }
+
     fieldValidator.renderErrors()
     this.errors = fieldValidator.getErrors()
   }
 
   validateAndLogin = () => {
+    loginPageView()
+
     const inputs = document.querySelectorAll('input')
     const emailField = document.querySelector('#email')
     const passwordField = document.querySelector('#password')
     const form = document.querySelector('form')
     const button = document.querySelector('button')
 
-    inputs.forEach((field) => {
-      field.addEventListener('blur', () => {
-        this.validateField(field)
-      })
-      field.addEventListener('input', () => {
-        this.validateField(field)
-      })
-    })
-
     form.addEventListener('submit', (e) => {
       e.preventDefault()
 
       inputs.forEach((field) => {
-        this.validateField(field)
+        this.validateField(field, field.parentElement, true)
+        inputs.forEach((field) => {
+          field.addEventListener('blur', () => {
+            this.validateField(field, field.parentElement, true)
+          })
+          field.addEventListener('input', () => {
+            this.validateField(field, field.parentElement, true)
+          })
+        })
       })
 
       const formValidator = new FieldValidator(button)
@@ -67,7 +74,6 @@ class LoginPage {
           window.location.reload()
         }
       } else {
-        console.log('error')
         formValidator.toggleError(true, 'Unresolved errors')
         formValidator.renderErrors()
       }
@@ -83,4 +89,4 @@ class LoginPage {
   }
 }
 
-export default LoginPage
+export default LoginPageScript
