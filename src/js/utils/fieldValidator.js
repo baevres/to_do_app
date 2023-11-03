@@ -70,12 +70,6 @@ class FieldValidator {
         case 'email':
           this.toggleError(!validator.isEmail(value), errorMessage)
           break
-        case 'required':
-          this.toggleError(
-            validator.isEmpty(value, { ignore_whitespace: true }),
-            errorMessage,
-          )
-          break
         case 'password':
           this.passwordErrors = this.validatePassword(value, options)
           break
