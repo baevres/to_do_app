@@ -1,7 +1,9 @@
-const todoPageView = () => {
-  const app = document.querySelector('.app')
+import renderPage from '../../services/renderPage.js'
+import MainData from '../../services/mainData.js'
 
-  app.innerHTML = `
+const View = () => {
+  const locator = '.app'
+  const pageContent = `
   <div class="container">
     <div class="content">
       <h1>Todo List</h1>
@@ -36,6 +38,35 @@ const todoPageView = () => {
     </div>
   </div>
   `
+  renderPage(locator, pageContent)
 }
 
-export default todoPageView
+const todoPage = () => {
+  View()
+
+  const mainData = new MainData()
+
+  // first render
+  mainData.setDefaultData()
+  mainData.render()
+
+  // toggle
+  mainData.modifyTodo('toggle')
+
+  // delete
+  mainData.modifyTodo('delete')
+
+  // add todo
+  mainData.addTodo()
+
+  // edit todo
+  mainData.editTodo()
+
+  // select/unselect all
+  mainData.selectAll()
+
+  // filter
+  mainData.setFilter()
+}
+
+export default todoPage

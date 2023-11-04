@@ -1,9 +1,48 @@
-import loginPageView from './loginPageView.js'
-
+import renderPage from '../../services/renderPage.js'
 import UserVerification from '../../services/userVerification.js'
 import FieldValidator from '../../utils/fieldValidator.js'
 
-class LoginPageScript {
+const View = () => {
+  const locator = '.app'
+  const pageContent = `
+  <div class="container">
+    <form class="login" novalidate>
+      <div class="field-wrapper">
+        <div>
+          <input
+          type="text"
+          id="email"
+          class="edit-item-input"
+          placeholder="test@mail.co"
+          required
+          />
+          <label for="email" class="input-label">Email</label>
+        </div>
+      </div>
+
+      <div class="field-wrapper">
+        <div>
+          <input
+          type="password"
+          id="password"
+          class="edit-item-input"
+          placeholder="Pa55word$"
+          required
+          />
+          <label for="password" class="input-label">Password</label>
+        </div>
+      </div>
+
+      <div class="login-btn">
+        <button class="btn save-btn">Log in</button>
+      </div>
+    </form>
+  </div>
+  `
+  renderPage(locator, pageContent)
+}
+
+class LoginPage {
   userVerification = new UserVerification()
   errors = []
 
@@ -35,7 +74,7 @@ class LoginPageScript {
   }
 
   validateAndLogin = () => {
-    loginPageView()
+    View()
 
     const inputs = document.querySelectorAll('input')
     const emailField = document.querySelector('#email')
@@ -74,7 +113,6 @@ class LoginPageScript {
           window.location.reload()
         }
       } else {
-        formValidator.toggleError(true, 'Unresolved errors')
         formValidator.renderErrors()
       }
     })
@@ -89,4 +127,4 @@ class LoginPageScript {
   }
 }
 
-export default LoginPageScript
+export default LoginPage
