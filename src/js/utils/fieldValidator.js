@@ -67,7 +67,7 @@ class FieldValidator {
   validateField(func, value, options = {}) {
     const { errorMessage } = options
 
-    if (value) {
+    if (value && !/^\s*$/.test(value)) {
       switch (func) {
         case 'email':
           this.toggleError(
