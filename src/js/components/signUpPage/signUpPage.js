@@ -73,7 +73,7 @@ const View = () => {
           type="tel"
           id="phone"
           class="edit-item-input"
-          placeholder="123-456-7890"
+          placeholder="+12(345)6789 or 123-456-7890"
           data-validation
           required
           />

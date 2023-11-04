@@ -100,10 +100,11 @@ class FieldValidator {
           if (!/[a-zA-Z]/.test(value)) {
             if (value.length >= 8) {
               this.toggleError(
-                !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(value),
+                !/^\+?(\d{2})?\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d+)$/.test(value),
                 errorMessage,
               )
-            } else this.toggleError(true, 'Too short number')
+            } else
+              this.toggleError(true, 'Too short number, should be more than 8')
           } else this.toggleError(true, 'Should not contain letters')
           break
         default:
