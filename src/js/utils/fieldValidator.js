@@ -64,11 +64,16 @@ class FieldValidator {
     } else return [...this.errors, ...this.passwordErrors]
   }
 
-  validateField(func, value, errorMessage = '', options = {}) {
+  validateField(func, value, options = {}) {
+    const { errorMessage } = options
+
     if (value) {
       switch (func) {
         case 'email':
-          this.toggleError(!validator.isEmail(value), errorMessage)
+          this.toggleError(
+            !/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(value),
+            errorMessage,
+          )
           break
         case 'password':
           this.passwordErrors = this.validatePassword(value, options)
@@ -76,7 +81,8 @@ class FieldValidator {
         case 'range':
           value = +value
           if (typeof value === 'number' && value > 0) {
-            const { min, minError, max, maxError } = options
+            const { min, max } = options
+            const { minError, maxError } = errorMessage
             this.toggleError(value < min, minError)
             this.toggleError(value > max, maxError)
           } else
@@ -105,10 +111,7 @@ class FieldValidator {
       }
     } else {
       if (func === 'required') {
-        this.toggleError(
-          validator.isEmpty(value, { ignore_whitespace: true }),
-          errorMessage,
-        )
+        this.toggleError(value === '' || /^\s*$/.test(value), errorMessage)
       }
     }
   }

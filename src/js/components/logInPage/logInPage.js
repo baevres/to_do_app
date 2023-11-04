@@ -51,10 +51,14 @@ class LoginPage {
     const value = field.value
 
     if (field.id === 'email') {
-      fieldValidator.validateField('email', value, 'Invalid email')
-      fieldValidator.validateField('required', value, 'The field is required')
+      fieldValidator.validateField('email', value, {
+        errorMessage: 'Invalid email',
+      })
+      fieldValidator.validateField('required', value, {
+        errorMessage: 'The field is required',
+      })
     } else {
-      fieldValidator.validateField('password', value, '', {
+      fieldValidator.validateField('password', value, {
         min: 8,
         required: true,
         hasNumber: true,
@@ -62,7 +66,9 @@ class LoginPage {
         hasUpperCase: true,
         hasSpecialSymbol: true,
       })
-      fieldValidator.validateField('required', value, 'The field is required')
+      fieldValidator.validateField('required', value, {
+        errorMessage: 'The field is required',
+      })
     }
 
     if (deleteForm) {

@@ -183,7 +183,9 @@ export default class MainData {
     const value = input.value
 
     const fieldValidator = new FieldValidator(input, form)
-    fieldValidator.validateField('required', value, 'The field is required')
+    fieldValidator.validateField('required', value, {
+      errorMessage: 'The field is required',
+    })
     fieldValidator.removeErrorWrapper()
     fieldValidator.renderErrors()
 

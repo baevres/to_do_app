@@ -157,28 +157,38 @@ const signUpPage = () => {
     const fieldValidator = new FieldValidator(field, parent)
     const value = field.value
 
-    fieldValidator.validateField('required', value, 'The field is required.')
+    fieldValidator.validateField('required', value, {
+      errorMessage: 'The field is required.',
+    })
 
     switch (field.id) {
       case 'age':
-        fieldValidator.validateField('range', value, '', {
+        fieldValidator.validateField('range', value, {
           min: 18,
-          minError: 'User is too young',
+          errorMessage: {
+            minError: 'User is too young',
+            maxError: 'User is too old',
+          },
           max: 60,
-          maxError: 'User is too old',
         })
         break
       case 'link':
-        fieldValidator.validateField('link', value, 'Not a link')
+        fieldValidator.validateField('link', value, {
+          errorMessage: 'Not a link',
+        })
         break
       case 'phone':
-        fieldValidator.validateField('tel', value, 'Not a valid phone number')
+        fieldValidator.validateField('tel', value, {
+          errorMessage: 'Not a valid phone number',
+        })
         break
       case 'email':
-        fieldValidator.validateField('email', value, 'Invalid email.')
+        fieldValidator.validateField('email', value, {
+          errorMessage: 'Invalid email.',
+        })
         break
       case 'password':
-        fieldValidator.validateField('password', value, '', {
+        fieldValidator.validateField('password', value, {
           min: 8,
           required: true,
           hasNumber: true,
@@ -189,7 +199,7 @@ const signUpPage = () => {
         break
       case 'confirmPassword':
         const password = document.querySelector('#password').value
-        fieldValidator.validateField('password', value, '', {
+        fieldValidator.validateField('password', value, {
           confirmPassword: true,
           comparison: password,
         })
