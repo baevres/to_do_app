@@ -1,142 +1,126 @@
-import renderPage from '../../services/renderPage.js'
+import renderPage from '../renderPage/renderPage.js'
 import FieldValidator from '../../utils/fieldValidator.js'
 
 const View = () => {
   const locator = '.app'
+  let fields = [
+    'name',
+    'age',
+    'link',
+    'gender',
+    'phone',
+    'login',
+    'email',
+    'password',
+    'confirmPassword',
+  ]
+  fields = fields.map((field) => {
+    let type, id, placeholder, label
+    if (field !== 'gender') {
+      switch (field) {
+        case 'name':
+          type = 'text'
+          id = field
+          placeholder = 'John'
+          label = 'Name'
+          break
+        case 'age':
+          type = 'number'
+          id = field
+          placeholder = '18'
+          label = 'Age'
+          break
+        case 'link':
+          type = 'text'
+          id = field
+          placeholder = 'proj-link.com'
+          label = 'Link to your project'
+          break
+        case 'phone':
+          type = 'tel'
+          id = field
+          placeholder = '+12(345)6789 or 123-456-7890'
+          label = 'Phone number'
+          break
+        case 'login':
+          type = 'text'
+          id = field
+          placeholder = 'john21'
+          label = 'Login'
+          break
+        case 'email':
+          type = 'text'
+          id = field
+          placeholder = 'john21@mail.co'
+          label = 'Email'
+          break
+        case 'password':
+          type = 'password'
+          id = field
+          placeholder = 'Pa55word$'
+          label = 'Password'
+          break
+        case 'confirmPassword':
+          type = 'password'
+          id = field
+          placeholder = 'Pa55word$'
+          label = 'Confirm Password'
+          break
+        default:
+          type = ''
+          id = ''
+          placeholder = ''
+          label = ''
+          break
+      }
+
+      return `
+      <div class="field-wrapper">
+        <div>
+          <input
+          type="${type}"
+          id="${id}"
+          class="edit-item-input"
+          placeholder="${placeholder}"
+          data-validation
+          required
+          />
+          <label for="${id}" class="input-label">${label}</label>
+        </div>
+      </div>
+      `
+    } else {
+      type = 'text'
+      id = field
+      label = 'Gender'
+      return `
+        <div class="field-wrapper">
+          <div class="${field}">
+            <select
+            type="${type}"
+            id="${id}"
+            class="edit-item-input"
+            value=""
+            data-validation
+            required
+            >
+              <option value=""></option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            <label for="${id}" class="input-label">${label}</label>
+          </div>
+        </div>
+      `
+    }
+  })
+
   const pageContent = `
   <div class="container">
     <form class="registration" novalidate>
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="text"
-          id="name"
-          class="edit-item-input"
-          placeholder="John"
-          data-validation
-          required
-          />
-          <label for="name" class="input-label">Name</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="number"
-          id="age"
-          class="edit-item-input"
-          placeholder="18"
-          data-validation
-          required
-          />
-          <label for="age" class="input-label">Age</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="text"
-          id="link"
-          class="edit-item-input"
-          placeholder="proj-link.com"
-          data-validation
-          required
-          />
-          <label for="link" class="input-label">Link to your project</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div class="gender">
-          <select
-          type="text"
-          id="gender"
-          class="edit-item-input"
-          value=""
-          data-validation
-          required
-          >
-          <option value=""></option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-          </select>
-          <label for="gender" class="input-label">Gender</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="tel"
-          id="phone"
-          class="edit-item-input"
-          placeholder="+12(345)6789 or 123-456-7890"
-          data-validation
-          required
-          />
-          <label for="phone" class="input-label">Phone number</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="text"
-          id="login"
-          class="edit-item-input"
-          placeholder="john21"
-          data-validation
-          required
-          />
-          <label for="login" class="input-label">Login</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="text"
-          id="email"
-          class="edit-item-input"
-          placeholder="john21@mail.co"
-          data-validation
-          required
-          />
-          <label for="email" class="input-label">Email</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="password"
-          id="password"
-          class="edit-item-input"
-          placeholder="Pa55word#"
-          data-validation
-          required
-          />
-          <label for="password" class="input-label">Password</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="password"
-          id="confirmPassword"
-          class="edit-item-input"
-          placeholder="Pa55word#"
-          data-validation
-          required
-          />
-          <label for="confirmPassword" class="input-label">
-          Confirm Password</label>
-        </div>
-      </div>
+      
+      ${fields.join('\n')}
 
       <button class="btn save-btn">Sign in</button>
     </form>

@@ -1,37 +1,54 @@
-import renderPage from '../../services/renderPage.js'
+import renderPage from '../renderPage/renderPage.js'
 import UserVerification from '../../services/userVerification.js'
 import FieldValidator from '../../utils/fieldValidator.js'
 
 const View = () => {
   const locator = '.app'
+  let fields = ['email', 'password']
+  fields = fields.map((field) => {
+    let type, id, placeholder, label
+    switch (field) {
+      case 'email':
+        type = 'text'
+        id = field
+        placeholder = 'test@mail.co'
+        label = 'Email'
+        break
+      case 'password':
+        type = 'password'
+        id = field
+        placeholder = 'Pa55word$'
+        label = 'Password'
+        break
+      default:
+        type = ''
+        id = ''
+        placeholder = ''
+        label = ''
+        break
+    }
+
+    return `
+      <div class="field-wrapper">
+        <div>
+          <input
+          type="${type}"
+          id="${id}"
+          class="edit-item-input"
+          placeholder="${placeholder}"
+          required
+          />
+          <label for="${id}" class="input-label">${label}</label>
+        </div>
+      </div>
+    `
+  })
+
   const pageContent = `
   <div class="container">
     <form class="login" novalidate>
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="text"
-          id="email"
-          class="edit-item-input"
-          placeholder="test@mail.co"
-          required
-          />
-          <label for="email" class="input-label">Email</label>
-        </div>
-      </div>
-
-      <div class="field-wrapper">
-        <div>
-          <input
-          type="password"
-          id="password"
-          class="edit-item-input"
-          placeholder="Pa55word$"
-          required
-          />
-          <label for="password" class="input-label">Password</label>
-        </div>
-      </div>
+      
+      ${fields.join('\n')}
 
       <div class="login-btn">
         <button class="btn save-btn">Log in</button>

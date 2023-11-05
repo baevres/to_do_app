@@ -1,4 +1,5 @@
-import renderPage from '../../services/renderPage.js'
+import renderPage from '../renderPage/renderPage.js'
+
 import MainData from '../../services/mainData.js'
 
 const View = () => {

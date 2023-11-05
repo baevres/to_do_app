@@ -164,8 +164,6 @@ export default class MainData {
     label.classList.add('edit-input-label')
     label.textContent = 'Edit todo'
 
-    label.appendChild(input)
-
     cancelButton.classList.add('btn', 'cancel-btn')
     cancelButton.textContent = 'cancel'
 
