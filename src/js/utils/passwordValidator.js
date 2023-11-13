@@ -65,28 +65,32 @@ class PasswordValidator {
       confirmPassword,
       comparison,
     } = options
+
     if (min) {
-      this.minLength(value, min, `Length should be more than ${min}`)
+      this.minLength(value, min, `length more than ${min}`)
     }
     if (required) {
-      this.isReqiured(value, 'Should not consist whitespaces')
+      this.isReqiured(value, 'not whitespaces')
     }
     if (hasNumber) {
-      this.hasNumber(value, 'Should consist at least 1 number')
+      this.hasNumber(value, '1 number')
     }
     if (hasLowerCase) {
-      this.hasLowerCase(value, 'Should consist at least 1 lower case letter')
+      this.hasLowerCase(value, '1 lower case letter')
     }
     if (hasUpperCase) {
-      this.hasUpperCase(value, 'Should consist at least 1 capitalize letter')
+      this.hasUpperCase(value, '1 capitalize letter')
     }
     if (hasSpecialSymbol) {
-      this.hasSpecialSymbol(value, 'Should consist at least 1 special sign')
+      this.hasSpecialSymbol(value, '1 special sign')
     }
     if (confirmPassword) {
       this.confirmPassword(value, comparison, 'Passwords do not match')
     }
-    return this.errors
+
+    if (confirmPassword || this.errors.length <= 0) return this.errors
+
+    return 'Password should have: ' + this.errors.join(', ')
   }
 }
 

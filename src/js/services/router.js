@@ -17,12 +17,10 @@ class Router {
   }
 
   handleLocation = async () => {
-    const { view, title, func } = this.checkPath()
+    const { title, func } = this.checkPath()
 
     if (window.location.pathname !== '/logout') {
       document.title = title
-      const html = await fetch(view).then((data) => data.text())
-      document.querySelector(this.locator).innerHTML = html
     }
 
     if (func) {

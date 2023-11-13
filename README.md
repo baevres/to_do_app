@@ -4,6 +4,12 @@ This is a straightforward Todo web application that allows you to manage your ta
 
 **Updates**
 
+_Stage 4_:
+* updated fileds displaying
+* updated fields validation
+* added new fields for **Sign Up** page
+* refactored page content displaying
+
 _Stage 3_:
 **Warning** - please before using run _npm i_ command
 * added filtering

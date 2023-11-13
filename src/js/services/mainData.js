@@ -71,12 +71,14 @@ export default class MainData {
         this.validateForm(newTodoInput, addForm, true)
       }
     }
-    newTodoInput.addEventListener('blur', checkForm)
 
     addForm.addEventListener('submit', (e) => {
       e.preventDefault()
 
       checkForm()
+      newTodoInput.addEventListener('blur', checkForm)
+      newTodoInput.addEventListener('input', checkForm)
+
       if (errors.length <= 0) {
         const inputValue = newTodoInput.value
         const newItem = {
@@ -142,16 +144,25 @@ export default class MainData {
     const wrapper = document.createElement('div')
     const form = document.createElement('form')
     const input = document.createElement('input')
+    const label = document.createElement('label')
     const div = document.createElement('div')
     const cancelButton = document.createElement('button')
     const saveButton = document.createElement('button')
 
     form.classList.add('edit-item-form')
     form.setAttribute('id', id)
+    form.setAttribute('novalidate', '')
 
     input.classList.add('edit-item-input')
+    input.setAttribute('id', id + 'inp')
     input.setAttribute('type', 'text')
+    input.setAttribute('placeholder', 'Edited Todo')
+    input.setAttribute('required', '')
     input.value = value
+
+    label.setAttribute('for', input.id)
+    label.classList.add('edit-input-label')
+    label.textContent = 'Edit todo'
 
     cancelButton.classList.add('btn', 'cancel-btn')
     cancelButton.textContent = 'cancel'
@@ -160,7 +171,7 @@ export default class MainData {
     saveButton.textContent = 'save'
 
     div.append(cancelButton, saveButton)
-    form.append(input, div)
+    form.append(input, label, div)
     wrapper.append(form)
 
     return wrapper
@@ -170,7 +181,9 @@ export default class MainData {
     const value = input.value
 
     const fieldValidator = new FieldValidator(input, form)
-    fieldValidator.validateField('required', value, 'The field is required')
+    fieldValidator.validateField('required', value, {
+      errorMessage: 'The field is required',
+    })
     fieldValidator.removeErrorWrapper()
     fieldValidator.renderErrors()
 
@@ -193,17 +206,6 @@ export default class MainData {
     }
 
     editForms.forEach((form) => {
-      // form validation
-      const input = form.querySelector(this.editFormInput)
-      let errors = []
-      input.addEventListener('blur', () => {
-        errors = this.validateForm(input, form)
-        if (errors.length <= 0) {
-          this.validateForm(input, form, true)
-        }
-      })
-
-      // form submitting
       form.addEventListener('click', (e) => {
         e.preventDefault()
         const target = e.target
@@ -212,8 +214,17 @@ export default class MainData {
           if (target.classList.contains('cancel-btn')) {
             deleteForm(oldLiItem, form.parentElement)
           } else if (target.classList.contains('save-btn')) {
-            const oldData = this.getData()
+            // form validation
+            const input = form.querySelector(this.editFormInput)
+            let errors = []
 
+            errors = this.validateForm(input, form)
+            input.addEventListener('blur', () => {
+              errors = this.validateForm(input, form)
+            })
+
+            // form submitting
+            const oldData = this.getData()
             if (errors.length <= 0) {
               let index = oldData.indexOf(
                 oldData.find((item) => item.id === id),
@@ -249,7 +260,10 @@ export default class MainData {
 
             parentLiElement.before(editForm)
             this.ulParentElement.removeChild(parentLiElement)
-            editForm.querySelector(this.editFormInput).focus()
+            const input = editForm.querySelector(this.editFormInput)
+            const label = editForm.querySelector('label')
+            input.focus()
+            label.addEventListener('click', () => input.focus())
 
             this.submitEditForm(parentLiElement, elemId)
           }

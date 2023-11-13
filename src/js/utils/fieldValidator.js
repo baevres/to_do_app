@@ -59,24 +59,61 @@ class FieldValidator {
   }
 
   getErrors = () => {
-    return [...this.errors, ...this.passwordErrors]
+    if (typeof this.passwordErrors === 'string') {
+      return [...this.errors, this.passwordErrors]
+    } else return [...this.errors, ...this.passwordErrors]
   }
 
-  validateField(func, value, errorMessage = '', options = {}) {
-    switch (func) {
-      case 'email':
-        this.toggleError(!validator.isEmail(value), errorMessage)
-        break
-      case 'required':
-        this.toggleError(
-          validator.isEmpty(value, { ignore_whitespace: true }),
-          errorMessage,
-        )
-        break
-      case 'password':
-        this.passwordErrors = this.validatePassword(value, options)
-      default:
-        null
+  validateField(func, value, options = {}) {
+    const { errorMessage } = options
+
+    if (value && !/^\s*$/.test(value)) {
+      switch (func) {
+        case 'email':
+          this.toggleError(
+            !/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(value),
+            errorMessage,
+          )
+          break
+        case 'password':
+          this.passwordErrors = this.validatePassword(value, options)
+          break
+        case 'range':
+          value = +value
+          if (typeof value === 'number' && value > 0) {
+            const { min, max } = options
+            const { minError, maxError } = errorMessage
+            this.toggleError(value < min, minError)
+            this.toggleError(value > max, maxError)
+          } else
+            this.toggleError(true, 'Should be a valid number greater than 0')
+          break
+        case 'link':
+          this.toggleError(
+            !/((https?|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/.test(
+              value,
+            ),
+            errorMessage,
+          )
+          break
+        case 'tel':
+          if (!/[a-zA-Z]/.test(value)) {
+            if (value.length >= 8) {
+              this.toggleError(
+                !/^\+?(\d{2})?\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d+)$/.test(value),
+                errorMessage,
+              )
+            } else
+              this.toggleError(true, 'Too short number, should be more than 8')
+          } else this.toggleError(true, 'Should not contain letters')
+          break
+        default:
+          null
+      }
+    } else {
+      if (func === 'required') {
+        this.toggleError(value === '' || /^\s*$/.test(value), errorMessage)
+      }
     }
   }
 
@@ -95,7 +132,7 @@ class FieldValidator {
       }
 
       allErrors.forEach((error) => {
-        this.errorWrapper.innerHTML += error + '<br/>'
+        this.errorWrapper.innerHTML += error + ' '
       })
     } else {
       this.field.classList.remove('error')

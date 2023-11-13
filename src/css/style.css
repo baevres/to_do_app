@@ -93,15 +93,22 @@ h1:hover {
   transition: 0.4s all;
 }
 
-.add-todo-input:focus {
+.input-label:hover {
+  cursor: text;
+}
+
+.add-todo-input:focus,
+.edit-item-input:focus {
   outline: none;
 }
 
 .add-todo-input:valid + .input-label,
-.add-todo-input:focus + .input-label {
-  background-color: white;
+.add-todo-input:focus + .input-label,
+.edit-item-input:valid + .input-label,
+.edit-item-input:focus + .input-label {
   top: 0;
   font-size: 12px;
+  background-color: #fff;
 }
 
 .add-btn,
@@ -122,7 +129,7 @@ h1:hover {
 }
 
 .filter-wrapper {
-  margin-top: 20px;
+  margin-top: 23px;
   display: grid;
   grid-template-columns: repeat(2, auto);
   align-items: center;
@@ -239,21 +246,47 @@ li .start div:hover {
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(2, auto);
+  grid-template-rows: 40px;
   padding-left: 40px;
   transition: 0.4s all;
 }
 
 .edit-item-form div {
   justify-self: end;
+  align-self: center;
 }
 
 .edit-item-input {
-  padding: 0 10px;
+  padding: 0 12px;
   border: 2px solid rgba(117, 117, 117, 0.5);
   border-radius: 5px;
   font-size: 18px;
   cursor: text;
   transition: 0.3s all;
+}
+
+.edit-input-label {
+  position: absolute;
+  display: block;
+  padding: 0 5px;
+  font-weight: 300;
+  font-size: 18px;
+  left: 49px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: 0.4s all;
+}
+
+.edit-input-label:hover {
+  cursor: text;
+}
+
+.edit-item-input:valid + .edit-input-label,
+.edit-item-input:focus + .edit-input-label {
+  top: 0;
+  font-size: 12px;
+  background-color: #fff;
 }
 
 .login,
@@ -263,17 +296,21 @@ li .start div:hover {
   display: grid;
   grid-template-rows: repeat(3, auto);
   grid-auto-rows: auto;
-  row-gap: 35px;
+  row-gap: 40px;
   align-content: center;
   position: relative;
   margin: 0 auto;
   width: 60%;
 }
 
-.login > div,
-.registration > div {
+.login .field-wrapper,
+.registration .field-wrapper {
   margin: 0 auto;
   width: 60%;
+  position: relative;
+}
+
+.field-wrapper > div:first-child {
   position: relative;
 }
 
@@ -284,10 +321,34 @@ li .start div:hover {
   height: 40px;
 }
 
+.add-new-item input::placeholder,
+.edit-item-form input::placeholder,
+.login input::placeholder,
+.registration input::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.add-new-item input:focus::placeholder,
+.edit-item-form input:focus::placeholder,
+.login input:focus::placeholder,
+.registration input:focus::placeholder {
+  font-size: 18px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.registration select {
+  display: block;
+  width: 98%;
+  height: 40px;
+}
+
 .login input.error,
 .registration input.error,
 .add-new-item input.error,
-.edit-item-form input.error {
+.edit-item-form input.error,
+.registration select.error {
   border-color: rgba(250, 70, 100, 0.7);
   outline-color: rgb(250, 70, 100);
 }
@@ -295,8 +356,6 @@ li .start div:hover {
 .login label,
 .registration label {
   font-size: 15px;
-  top: 0;
-  background-color: #fff;
 }
 
 .login .save-btn,
@@ -312,19 +371,21 @@ li .start div:hover {
 }
 
 .error-message {
-  margin-top: 10px;
+  margin-top: 3px;
   margin-left: 8px;
   display: block;
   color: rgb(250, 70, 100);
-  font-size: 13px;
+  font-size: 11px;
+  position: absolute;
 }
 
 .list-container .error-message {
-  margin-left: 40px;
+  margin-left: 50px;
 }
 
 .container > .error-message,
 .login-btn > .error-message {
-  margin-left: 0;
-  text-align: center;
+  left: 49%;
+  bottom: 0;
+  transform: translateX(-50%);
 }
