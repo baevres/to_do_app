@@ -4,25 +4,43 @@ This is a straightforward Todo web application that allows you to manage your ta
 
 **API endpoints**
 
-_tasks_:
+_tasks_: 
+
 GET:
+
 /api/user/todo{query} - get all tasks, query - checked=bool
+
 /api/user/todo/{id} - get a specific task
+
 POST:
+
 /api/user/todo - create a new task
+
 PUT:
+
 /api/user/todo - update a list of tasks
+
 /api/user/todo/{id} - update a specific task
+
 DELETE:
+
 /api/user/todo/{id} - delete a specific task
 
+***
 _users_:
+
 GET:
+
 /api/user/{id} - get a specific user
+
 POST:
+
 /api/user - send data and check if is it an unique
+
 /api/user/create - create a new user
+
 /api/user/auth - authenticate user and get new tokens
+
 /api/user/auth/refresh - refresh access token
 
 **Updates**
@@ -76,6 +94,7 @@ _Stage 2_:
 6. Set secret data into _.env_ file
 
 **Usage**
+
 1. Open the terminal and execute the command "npm start"
 2. Create your user and login
 3. Use the input field to add new tasks and press Enter to add them to the list.
