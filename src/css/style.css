@@ -155,6 +155,7 @@ h1:hover {
 .selected {
   text-decoration: underline;
   color: rgba(62, 106, 250, 0.6);
+  pointer-events: none;
 }
 
 .selected:hover {
@@ -184,6 +185,10 @@ h1:hover {
 #selectAllCheckbox {
   top: 23%;
   left: 18px;
+}
+
+.todoWrapper {
+  position: relative;
 }
 
 ul {
@@ -388,4 +393,114 @@ li .start div:hover {
   left: 49%;
   bottom: 0;
   transform: translateX(-50%);
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background-color: rgba(241, 242, 243, 0.2);
+}
+
+.loader svg {
+  height: 100%;
+}
+
+.error-toast-wrapper,
+.success-toast-wrapper,
+.info-toast-wrapper {
+  display: grid;
+  grid-auto-columns: 250px;
+  grid-template-rows: 90% 10%;
+  position: fixed;
+  bottom: 35px;
+  min-height: 40px;
+  border-radius: 10%;
+}
+
+.error-toast-content,
+.success-toast-content,
+.info-toast-content {
+  background-color: rgba(245, 55, 34, 0.8);
+  padding: 10px 20px 15px 15px;
+  font-size: 12px;
+}
+
+.error-toast-footer {
+  background-color: rgba(245, 55, 34, 0.4);
+}
+
+.error-toast-timer,
+.success-toast-timer,
+.info-toast-timer {
+  display: block;
+  background-color: rgba(245, 55, 34, 1);
+  width: 100%;
+  height: 100%;
+}
+
+.error-toast-close,
+.success-toast-close,
+.info-toast-close {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.error-toast-close:hover,
+.success-toast-close:hover,
+.info-toast-close:hover {
+  cursor: pointer;
+  background-color: rgba(245, 55, 34, 0.4);
+}
+
+.success-toast-content {
+  background-color: rgba(12, 179, 29, 0.8);
+}
+
+.success-toast-footer {
+  background-color: rgba(12, 179, 29, 0.4);
+}
+
+.success-toast-timer {
+  background-color: rgba(12, 179, 29, 1);
+}
+
+.success-toast-close:hover {
+  background-color: rgba(12, 179, 29, 0.4);
+}
+
+.info-toast-content {
+  background-color: rgba(227, 148, 20, 0.8);
+}
+
+.info-toast-footer {
+  background-color: rgba(227, 148, 20, 0.4);
+}
+
+.info-toast-timer {
+  background-color: rgba(227, 148, 20, 1);
+}
+
+.info-toast-close:hover {
+  background-color: rgba(227, 148, 20, 0.4);
+}
+
+.hide {
+  animation: slideAndFade 1s ease-in-out forwards;
+}
+
+@keyframes slideAndFade {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
 }

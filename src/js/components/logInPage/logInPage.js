@@ -1,5 +1,8 @@
 import renderPage from '../renderPage/renderPage.js'
+import ErrorToast from '../errorToast/errorToast.js'
+
 import UserVerification from '../../services/userVerification.js'
+
 import FieldValidator from '../../utils/fieldValidator.js'
 
 const View = () => {
@@ -93,7 +96,6 @@ class LoginPage {
     }
 
     fieldValidator.renderErrors()
-    this.errors = fieldValidator.getErrors()
   }
 
   validateAndLogin = () => {
@@ -103,9 +105,10 @@ class LoginPage {
     const emailField = document.querySelector('#email')
     const passwordField = document.querySelector('#password')
     const form = document.querySelector('form')
-    const button = document.querySelector('button')
 
-    form.addEventListener('submit', (e) => {
+    const errorToast = new ErrorToast('.container')
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault()
 
       inputs.forEach((field) => {
@@ -120,23 +123,23 @@ class LoginPage {
         })
       })
 
-      const formValidator = new FieldValidator(button)
-      if (this.errors.length <= 0) {
-        const result = this.userVerification.verifyUser(
+      const errors = document.querySelectorAll('.error-message')
+      if (errors.length <= 0) {
+        const res = await this.userVerification.verifyUser(
           emailField.value,
           passwordField.value,
         )
 
-        formValidator.toggleError(!result, 'Username and password do not match')
-        formValidator.renderErrors()
-        this.errors = formValidator.getErrors()
-
-        if (this.errors.length <= 0) {
-          this.setLoggedIn(result)
-          window.location.reload()
+        if (res && !res.type) {
+          errorToast.setToast('Success', 'success')
+          localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+          setTimeout(() => {
+            this.setLoggedIn(true)
+            window.location.reload()
+          }, 2000)
+        } else {
+          errorToast.setToast(`Something went wrong - ${res.message}`)
         }
-      } else {
-        formValidator.renderErrors()
       }
     })
   }

@@ -1,10 +1,22 @@
 'use-strict'
+import request from './requests.js'
+import logout from './logout.js'
+
+import Loader from '../components/loader/loader.js'
+import ErrorToast from '../components/errorToast/errorToast.js'
+
+import UserVerification from './userVerification.js'
+
 import FieldValidator from '../utils/fieldValidator.js'
 
 export default class MainData {
-  #listID = 0
   #listData = []
   #selectedAll = false
+  #url = `http://localhost:5555/api/user`
+  #accessToken
+
+  userVerification = new UserVerification()
+  refreshToken = this.userVerification.refreshToken
 
   ulParentElement = document.querySelector('.list-container')
   addFormLocator = '.add-new-item'
@@ -20,46 +32,150 @@ export default class MainData {
   complitedTasksLocator = '#complited'
   pendingTasksLocator = '#pending'
 
-  setDefaultData() {
-    const defaultData = [
-      { id: `box${this.#listID++}`, value: 'Test 1', checked: false },
-      { id: `box${this.#listID++}`, value: 'Test 2', checked: true },
-    ]
+  loader = new Loader('.list-container')
+  setLoader = this.loader.setLoader
 
-    if (
-      localStorage.getItem('listData') &&
-      !localStorage.getItem('selectedAll')
-    ) {
-      localStorage.setItem('selectedAll', JSON.stringify(this.#selectedAll))
-    }
+  errorToast = new ErrorToast('.container')
+  setToast = this.errorToast.setToast
 
-    if (!localStorage.getItem('listData')) {
-      this.#listData = defaultData
-      localStorage.setItem('listData', JSON.stringify(defaultData))
-      localStorage.setItem('listID', JSON.stringify(this.#listID))
+  setDefaultData = async () => {
+    if (!localStorage.getItem('selectedAll')) {
       localStorage.setItem('selectedAll', JSON.stringify(this.#selectedAll))
     } else {
-      this.#listID = +JSON.parse(localStorage.getItem('listID'))
-      this.#listData = JSON.parse(localStorage.getItem('listData'))
       this.#selectedAll = JSON.parse(localStorage.getItem('selectedAll'))
+    }
+
+    if (localStorage.getItem('accessToken')) {
+      this.#accessToken = JSON.parse(localStorage.getItem('accessToken'))
+    }
+
+    await this.setDataFromDB()
+    this.render()
+  }
+
+  setHeaders = () => {
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.#accessToken}`,
     }
   }
 
-  getData() {
+  setDataFromDB = async (query = '') => {
+    this.#listData = await this.getData(query)
     return this.#listData
   }
 
-  setNewData(newData, action = '') {
-    if (action === 'add') {
-      this.#listData.push(newData)
-    } else {
-      this.#listData = newData
-    }
+  getLocalData = () => this.#listData
 
-    localStorage.setItem('listID', JSON.stringify(this.#listID))
-    localStorage.setItem('listData', JSON.stringify(this.#listData))
+  requestRefreshToken = async () => {
+    try {
+      const tokens = await this.refreshToken()
+      if (tokens && !tokens.type) {
+        localStorage.setItem('accessToken', JSON.stringify(tokens.accessToken))
+        this.#accessToken = tokens.accessToken
+        return tokens
+      } else throw tokens
+    } catch (err) {
+      if (err.reason === 'Unauthorized') {
+        this.setToast('Session is expired', 'info')
+        setTimeout(logout, 3000)
+      } else return err
+    }
   }
 
+  getData = async (query = '') => {
+    const url = this.#url + `/todo${query}`
+    let data = await request(url, 'GET', null, this.setHeaders())
+
+    if (data.reason === 'Unauthorized') {
+      let res = await this.requestRefreshToken()
+      if (res.type) return res
+
+      data = await request(url, 'GET', null, this.setHeaders())
+    }
+    return data
+  }
+
+  postData = async (body) => {
+    const url = this.#url + `/todo`
+    let data = await request(url, 'POST', body, this.setHeaders())
+
+    if (data.reason === 'Unauthorized') {
+      let res = await this.requestRefreshToken()
+      if (res.type) return res
+
+      data = await request(url, 'POST', body, this.setHeaders())
+    }
+    return data
+  }
+
+  putData = async (body) => {
+    const url = this.#url + `/todo/${body.id}`
+    let data = await request(url, 'PUT', body, this.setHeaders())
+
+    if (data.reason === 'Unauthorized') {
+      let res = await this.requestRefreshToken()
+      if (res.type) return res
+
+      data = await request(url, 'PUT', body, this.setHeaders())
+    }
+    return data
+  }
+
+  putMultipleData = async (body) => {
+    const url = this.#url + `/todo`
+    let data = await request(url, 'PUT', body, this.setHeaders())
+
+    if (data.reason === 'Unauthorized') {
+      let res = await this.requestRefreshToken()
+      if (res.type) return res
+
+      data = await request(url, 'PUT', body, this.setHeaders())
+    }
+    return data
+  }
+
+  deleteData = async (body) => {
+    const url = this.#url + `/todo/${body.id}`
+    let data = await request(url, 'DELETE', null, this.setHeaders())
+
+    if (data.reason === 'Unauthorized') {
+      let res = await this.requestRefreshToken()
+      if (res.type) return res
+
+      data = await request(url, 'DELETE', null, this.setHeaders())
+    }
+    return data
+  }
+
+  setActionRequest = (action) => {
+    switch (action) {
+      case 'add':
+        return this.postData
+      case 'edit':
+        return this.putData
+      case 'toggle':
+        return this.putData
+      case 'multipleData':
+        return this.putMultipleData
+      case 'delete':
+        return this.deleteData
+    }
+  }
+
+  onSetData = async (newData, action = 'add') => {
+    let result
+    const actionRequest = this.setActionRequest(action)
+    try {
+      result = await actionRequest(newData)
+    } catch (err) {
+      result = err
+    }
+    await this.setDataFromDB()
+    return result
+  }
+
+  // add todo
   addTodo = () => {
     const addForm = document.querySelector(this.addFormLocator)
     const newTodoInput = addForm.querySelector('input')
@@ -72,7 +188,7 @@ export default class MainData {
       }
     }
 
-    addForm.addEventListener('submit', (e) => {
+    addForm.addEventListener('submit', async (e) => {
       e.preventDefault()
 
       checkForm()
@@ -80,67 +196,77 @@ export default class MainData {
       newTodoInput.addEventListener('input', checkForm)
 
       if (errors.length <= 0) {
+        this.setLoader()
+
         const inputValue = newTodoInput.value
-        const newItem = {
-          id: `box${this.#listID++}`,
-          value: inputValue,
+        let newItem = {
+          title: inputValue,
           checked: false,
         }
 
-        this.setNewData(newItem, 'add')
-        this.render('add', newItem)
+        const res = await this.onSetData(newItem)
+        if (res && !res.type) {
+          newItem.id = res.id
+          this.render('add', newItem)
+        } else if (res.type) {
+          this.setToast(res.message)
+        }
 
-        this.filterTasks()
+        this.setLoader(false)
+        await this.filterTasks()
       }
       e.target.reset()
     })
   }
 
+  // toggle/delete
   modifyTodo = (action) => {
     const locator =
       action === 'delete' ? this.deleteBtnLocator : this.checkboxLocator
-    this.ulParentElement.addEventListener('click', (e) => {
+    this.ulParentElement.addEventListener('click', async (e) => {
       const currentTarget = e.target
       const elemList = document.querySelectorAll(locator)
 
-      const oldData = this.getData()
-      let newData = []
-      let newItem = []
+      const oldData = this.getLocalData()
+      let item = []
 
       if (currentTarget) {
-        elemList.forEach((elem) => {
+        elemList.forEach(async (elem) => {
           if (currentTarget === elem) {
+            this.setLoader()
+
             if (action === 'delete') {
               const liParentElem = elem.parentElement
               const elemId = liParentElem.querySelector(this.checkboxLocator).id
               const index = oldData.indexOf(
-                oldData.find((item) => elemId === item.id),
+                oldData.find((itm) => +elemId === itm.id),
               )
 
-              newItem = oldData.splice(index, 1)[0]
-              newData = [...oldData]
+              item = oldData.splice(index, 1)[0]
             } else if (action === 'toggle') {
               const elemId = elem.id
               const index = oldData.indexOf(
-                oldData.find((item) => elemId === item.id),
+                oldData.find((item) => +elemId === item.id),
               )
-
               oldData[index].checked = elem.checked
-              newData.push(...oldData)
-              newItem = oldData[index]
+              item = oldData[index]
             }
 
-            this.setNewData(newData)
-            this.render(action, newItem)
+            const res = await this.onSetData(item, action)
+            if (res && !res.type) {
+              this.render(action, item)
+            } else if (res.type) {
+              this.setToast(res.message)
+            }
 
-            this.filterTasks()
+            await this.filterTasks()
           }
         })
       }
     })
   }
 
-  #generateEditForm = ({ id, value }) => {
+  #generateEditForm = ({ id, title }) => {
     const wrapper = document.createElement('div')
     const form = document.createElement('form')
     const input = document.createElement('input')
@@ -150,15 +276,15 @@ export default class MainData {
     const saveButton = document.createElement('button')
 
     form.classList.add('edit-item-form')
-    form.setAttribute('id', id)
+    form.setAttribute('id', 'box' + id)
     form.setAttribute('novalidate', '')
 
     input.classList.add('edit-item-input')
-    input.setAttribute('id', id + 'inp')
+    input.setAttribute('id', form.id + 'inp')
     input.setAttribute('type', 'text')
     input.setAttribute('placeholder', 'Edited Todo')
     input.setAttribute('required', '')
-    input.value = value
+    input.value = title
 
     label.setAttribute('for', input.id)
     label.classList.add('edit-input-label')
@@ -177,6 +303,7 @@ export default class MainData {
     return wrapper
   }
 
+  // validation
   validateForm = (input, form, deleteForm = false) => {
     const value = input.value
 
@@ -194,11 +321,12 @@ export default class MainData {
     return fieldValidator.getErrors()
   }
 
+  // edit
   submitEditForm = (oldLiItem, id) => {
     const editForms = document.querySelectorAll(this.editFormLocator)
 
-    let newData = []
-    let newItem = []
+    id = +id
+    let item = []
 
     const deleteForm = (insertElem, formParent) => {
       formParent.after(insertElem)
@@ -206,14 +334,16 @@ export default class MainData {
     }
 
     editForms.forEach((form) => {
-      form.addEventListener('click', (e) => {
+      form.addEventListener('click', async (e) => {
         e.preventDefault()
         const target = e.target
 
-        if (target && form.id === id) {
+        if (target && form.id === 'box' + id) {
           if (target.classList.contains('cancel-btn')) {
             deleteForm(oldLiItem, form.parentElement)
           } else if (target.classList.contains('save-btn')) {
+            this.setLoader()
+
             // form validation
             const input = form.querySelector(this.editFormInput)
             let errors = []
@@ -224,19 +354,26 @@ export default class MainData {
             })
 
             // form submitting
-            const oldData = this.getData()
+            const oldData = this.getLocalData()
             if (errors.length <= 0) {
               let index = oldData.indexOf(
                 oldData.find((item) => item.id === id),
               )
-              oldData[index].value = input.value
+              oldData[index].title = input.value
 
-              newData.push(...oldData)
-              newItem = this.#generateNewItem(oldData[index])
+              item = this.#generateNewItem(oldData[index])
+              const requestItem = {
+                ...oldData[index],
+              }
 
-              this.setNewData(newData)
-              deleteForm(newItem, form.parentElement)
+              const res = await this.onSetData(requestItem, 'edit')
+              if (res && !res.type) {
+                deleteForm(item, form.parentElement)
+              } else if (res.type) {
+                this.setToast(res.message)
+              }
             }
+            this.setLoader(false)
           }
         }
       })
@@ -255,7 +392,7 @@ export default class MainData {
             const elemId = parentLiElement.querySelector(
               this.checkboxLocator,
             ).id
-            const oldItem = this.getData().find(({ id }) => id === elemId)
+            const oldItem = this.getLocalData().find(({ id }) => id === +elemId)
             const editForm = this.#generateEditForm(oldItem)
 
             parentLiElement.before(editForm)
@@ -272,7 +409,7 @@ export default class MainData {
     })
   }
 
-  #generateNewItem = ({ id, value, checked }) => {
+  #generateNewItem = ({ id, title, checked }) => {
     const li = document.createElement('li')
     const div = document.createElement('div')
     const input = document.createElement('input')
@@ -283,10 +420,11 @@ export default class MainData {
 
     input.setAttribute('type', 'checkbox')
     input.setAttribute('id', id)
+    input.setAttribute('data-id', 'box' + id)
     input.classList.add('checkbox')
 
     textDiv.classList.add('item-value')
-    textDiv.textContent = value
+    textDiv.textContent = title
 
     button.classList.add('btn', 'delete-btn')
     button.textContent = 'delete'
@@ -302,9 +440,10 @@ export default class MainData {
     return li
   }
 
-  setSelectedAll = () => {
+  // select all
+  setSelectedAll = async () => {
     const selectAllCheckbox = document.querySelector(this.selectAllLocator)
-    const data = this.getData()
+    const data = await this.getData()
     const checkedList = data.filter((item) => item.checked)
 
     selectAllCheckbox.checked =
@@ -316,61 +455,62 @@ export default class MainData {
 
   selectAll = () => {
     const selectAllCheckbox = document.querySelector(this.selectAllLocator)
-    selectAllCheckbox.addEventListener('click', (e) => {
+    selectAllCheckbox.addEventListener('click', async (e) => {
+      this.setLoader()
+
       const target = e.target
-      const oldData = this.getData()
+      const oldData = await this.getData()
       let newData = []
+      let items
+
       if (target.checked) {
-        newData = oldData.map((item) => {
-          if (!item.checked) {
-            item.checked = true
-          }
-          return item
+        items = oldData.filter((item) => {
+          return !item.checked
         })
       } else {
-        newData = oldData.map((item) => {
-          if (item.checked) {
-            item.checked = false
-          }
-          return item
+        items = oldData.filter((item) => {
+          return item.checked
         })
       }
+      newData = items.map((item) => {
+        item.checked = !item.checked
+        return item
+      })
 
-      this.setNewData(newData)
+      await this.onSetData(newData, 'multipleData')
       this.render()
 
+      this.setLoader(false)
       this.filterTasks()
     })
   }
 
-  filterTasks = () => {
+  // filter
+  filterTasks = async () => {
     const filterBtnsWrapper = document.querySelector(this.filterBtnsLocator)
     const filterBtns = filterBtnsWrapper.querySelectorAll(this.filterBtnLocator)
-    const data = this.getData()
 
-    filterBtns.forEach((btn) => {
+    for (const btn of filterBtns) {
       if (btn.classList.contains('selected')) {
+        let query = ''
         switch (btn.id) {
           case 'allTasks':
-            this.render()
             break
           case 'complited':
-            this.render(
-              null,
-              null,
-              data.filter((item) => item.checked),
-            )
+            query = '?checked=true'
             break
           case 'pending':
-            this.render(
-              null,
-              null,
-              data.filter((item) => !item.checked),
-            )
+            query = '?checked=false'
             break
         }
+        this.setLoader()
+
+        const data = await this.setDataFromDB(query)
+        this.render(null, null, data)
+
+        this.setLoader(false)
       }
-    })
+    }
   }
 
   setFilter = () => {
@@ -380,19 +520,23 @@ export default class MainData {
     filterBtnsWrapper.addEventListener('click', (e) => {
       const target = e.target
 
-      filterBtns.forEach((btn) => {
-        if (target && target === btn) {
-          btn.classList.add('selected')
-        } else {
-          btn.classList.remove('selected')
-        }
-      })
+      if (target && target.tagName === 'BUTTON') {
+        filterBtns.forEach((btn) => {
+          if (target === btn) {
+            btn.classList.add('selected')
+          } else {
+            btn.classList.remove('selected')
+          }
+        })
 
-      this.filterTasks()
+        this.filterTasks()
+      }
     })
   }
 
-  render(action, item = {}, data = null) {
+  // render
+  async render(action, item = {}, data = null) {
+    let localData = this.getLocalData()
     switch (action) {
       case 'add':
         const newItem = this.#generateNewItem(item)
@@ -400,7 +544,9 @@ export default class MainData {
         break
 
       case 'toggle':
-        const oldItemInput = this.ulParentElement.querySelector(`#${item.id}`)
+        const oldItemInput = this.ulParentElement.querySelector(
+          `[data-id="box${item.id}"]`,
+        )
         const oldItem = oldItemInput.parentElement.parentElement
         const itemForReplace = this.#generateNewItem(item)
         oldItem.before(itemForReplace)
@@ -412,14 +558,14 @@ export default class MainData {
           this.checkboxLocator,
         )
         elemItems.forEach((elem) => {
-          if (elem.id === item.id) {
+          if (+elem.id === item.id) {
             this.ulParentElement.removeChild(elem.parentElement.parentElement)
           }
         })
         break
 
       default:
-        const renderData = data ? data : this.getData()
+        const renderData = data ? data : localData
         this.ulParentElement.innerHTML = ''
         const items = renderData.map((listItem) =>
           this.#generateNewItem(listItem),
@@ -427,6 +573,6 @@ export default class MainData {
         this.ulParentElement.append(...items)
         break
     }
-    this.setSelectedAll()
+    await this.setSelectedAll()
   }
 }
