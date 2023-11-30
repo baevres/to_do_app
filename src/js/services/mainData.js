@@ -11,6 +11,7 @@ import FieldValidator from '../utils/fieldValidator.js'
 
 export default class MainData {
   #listData = []
+  cachedData = []
   #selectedAll = false
   #url = `http://localhost:5555/api/user`
   #accessToken
@@ -62,6 +63,7 @@ export default class MainData {
 
   setDataFromDB = async (query = '') => {
     this.#listData = await this.getData(query)
+    if (!query) this.cachedData = this.#listData
     return this.#listData
   }
 
@@ -443,7 +445,7 @@ export default class MainData {
   // select all
   setSelectedAll = async () => {
     const selectAllCheckbox = document.querySelector(this.selectAllLocator)
-    const data = await this.getData()
+    const data = this.cachedData
     const checkedList = data.filter((item) => item.checked)
 
     selectAllCheckbox.checked =
