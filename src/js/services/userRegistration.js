@@ -4,18 +4,9 @@ class UserRegistration {
   #url = `http://localhost:5555/api`
   fields = document.querySelectorAll('[data-validation]')
 
-  getUsersUniqueEmail = async (email) => {
-    const url = this.#url + '/user'
-    const data = await request(url, 'POST', { email })
-    return data
-  }
-
   getUsersUniqueData = async (value, type) => {
-    let body
-    if (type === 'email') body = { email: value }
-    if (type === 'login') body = { login: value }
-    const url = this.#url + '/user'
-    const data = await request(url, 'POST', body)
+    const url = this.#url + `/user?${type}=${value}`
+    const data = await request(url)
     return data
   }
 

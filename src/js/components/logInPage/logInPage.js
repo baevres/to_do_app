@@ -125,20 +125,24 @@ class LoginPage {
 
       const errors = document.querySelectorAll('.error-message')
       if (errors.length <= 0) {
-        const res = await this.userVerification.verifyUser(
-          emailField.value,
-          passwordField.value,
-        )
+        try {
+          const res = await this.userVerification.verifyUser(
+            emailField.value,
+            passwordField.value,
+          )
 
-        if (res && !res.type) {
-          errorToast.setToast('Success', 'success')
-          localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
-          setTimeout(() => {
-            this.setLoggedIn(true)
-            window.location.reload()
-          }, 2000)
-        } else {
-          errorToast.setToast(`Something went wrong - ${res.message}`)
+          if (res && !res.type && res.message != 'Failed to fetch') {
+            errorToast.setToast('Success', 'success')
+            localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+            setTimeout(() => {
+              this.setLoggedIn(true)
+              window.location.reload()
+            }, 1500)
+          } else {
+            errorToast.setToast(`Something went wrong - ${res.message}`)
+          }
+        } catch (err) {
+          errorToast.setToast(`Something went wrong`)
         }
       }
     })

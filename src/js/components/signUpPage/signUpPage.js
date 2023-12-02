@@ -172,19 +172,26 @@ const signUpPage = () => {
         })
         break
       case 'login':
-        const result = await userRegistration.checkUniqueData(value, 'login')
-        fieldValidator.toggleError(
-          result && result.length > 0,
-          'Login is not unique',
-        )
+        if (value) {
+          const result = await userRegistration.checkUniqueData(value, 'login')
+          fieldValidator.toggleError(
+            result && result.length > 0,
+            'Login is not unique',
+          )
+        }
         break
       case 'email':
         fieldValidator.validateField('email', value, {
           errorMessage: 'Invalid email.',
         })
 
-        const res = await userRegistration.checkUniqueData(value)
-        fieldValidator.toggleError(res && res.length > 0, 'Email is not unique')
+        if (value) {
+          const res = await userRegistration.checkUniqueData(value)
+          fieldValidator.toggleError(
+            res && res.length > 0,
+            'Email is not unique',
+          )
+        }
         break
       case 'password':
         fieldValidator.validateField('password', value, {
@@ -212,6 +219,11 @@ const signUpPage = () => {
     fieldValidator.renderErrors()
   }
 
+  const clearErrors = () => {
+    const errors = document.querySelectorAll('.error-message')
+    errors.forEach((error) => error.remove())
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
@@ -235,9 +247,12 @@ const signUpPage = () => {
           'success',
         )
         e.target.reset()
+
+        clearErrors()
+
         setTimeout(() => {
           window.location.assign('/')
-        }, 2000)
+        }, 1500)
       } else {
         errorToast.setToast(`Something went wrong - ${res.message}`)
       }

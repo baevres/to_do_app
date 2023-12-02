@@ -34,12 +34,7 @@ class UserVerification {
   verifyUser = async (email, password) => {
     const body = { email, password }
 
-    let res
-    try {
-      res = await this.getUserByCreds(body)
-    } catch (err) {
-      return err
-    }
+    const res = await this.getUserByCreds(body)
     return res
   }
 }
