@@ -81,7 +81,10 @@ export default class MainData {
       if (err.reason === 'Unauthorized') {
         this.setToast('Session is expired', 'info')
         setTimeout(logout, 3000)
-      } else return err
+      } else {
+        logout()
+        return err
+      }
     }
   }
 
