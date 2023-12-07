@@ -1,6 +1,7 @@
 const logout = () => {
+  localStorage.removeItem('accessToken')
   localStorage.setItem('loggedIn', JSON.stringify(false))
-  window.location.reload()
+  window.location.assign('/')
 }
 
 export default logout

@@ -35,7 +35,9 @@ const View = () => {
         </div>
       </div>
 
-      <ul class="list-container"></ul>
+      <div class="todoWrapper">
+        <ul class="list-container"></ul>
+      </div>
     </div>
   </div>
   `
@@ -49,7 +51,6 @@ const todoPage = () => {
 
   // first render
   mainData.setDefaultData()
-  mainData.render()
 
   // toggle
   mainData.modifyTodo('toggle')

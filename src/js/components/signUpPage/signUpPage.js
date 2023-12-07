@@ -1,4 +1,8 @@
 import renderPage from '../renderPage/renderPage.js'
+import ErrorToast from '../errorToast/errorToast.js'
+
+import UserRegistration from '../../services/userRegistration.js'
+
 import FieldValidator from '../../utils/fieldValidator.js'
 
 const View = () => {
@@ -132,12 +136,13 @@ const View = () => {
 const signUpPage = () => {
   View()
 
+  const errorToast = new ErrorToast('.container')
+  const userRegistration = new UserRegistration()
+
   const fieldsForValidation = document.querySelectorAll('[data-validation]')
   const form = document.querySelector('form')
 
-  let errors = []
-
-  const validateField = (field, parent, deleteForm = false) => {
+  const validateField = async (field, parent, deleteForm = false) => {
     const fieldValidator = new FieldValidator(field, parent)
     const value = field.value
 
@@ -166,10 +171,27 @@ const signUpPage = () => {
           errorMessage: 'Not a valid phone number',
         })
         break
+      case 'login':
+        if (value) {
+          const result = await userRegistration.checkUniqueData(value, 'login')
+          fieldValidator.toggleError(
+            result && result.length > 0,
+            'Login is not unique',
+          )
+        }
+        break
       case 'email':
         fieldValidator.validateField('email', value, {
           errorMessage: 'Invalid email.',
         })
+
+        if (value) {
+          const res = await userRegistration.checkUniqueData(value)
+          fieldValidator.toggleError(
+            res && res.length > 0,
+            'Email is not unique',
+          )
+        }
         break
       case 'password':
         fieldValidator.validateField('password', value, {
@@ -195,10 +217,14 @@ const signUpPage = () => {
     }
 
     fieldValidator.renderErrors()
-    errors = fieldValidator.getErrors()
   }
 
-  form.addEventListener('submit', (e) => {
+  const clearErrors = () => {
+    const errors = document.querySelectorAll('.error-message')
+    errors.forEach((error) => error.remove())
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     fieldsForValidation.forEach((field) => {
@@ -211,8 +237,25 @@ const signUpPage = () => {
       })
     })
 
-    if (errors.length <= 0) {
-      console.log('Success')
+    const errors = document.querySelectorAll('.error-message')
+    if (errors.length === 0) {
+      const res = await userRegistration.createNewUser()
+
+      if (res && !res.type) {
+        errorToast.setToast(
+          'Success. You can log in with your credentials',
+          'success',
+        )
+        e.target.reset()
+
+        clearErrors()
+
+        setTimeout(() => {
+          window.location.assign('/')
+        }, 1500)
+      } else {
+        errorToast.setToast(`Something went wrong - ${res.message}`)
+      }
     }
   })
 }
