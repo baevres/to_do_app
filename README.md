@@ -4,6 +4,11 @@ This is a straightforward Todo web application that allows you to manage your ta
 
 **Updates**
 
+_Stage 6_:
+* updated API endpoints
+* updated expected API response data
+* added cookie confirmation
+
 _Stage 5_:
 * added server on a native node.js
 * added interaction with API service
