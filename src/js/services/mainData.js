@@ -13,7 +13,7 @@ export default class MainData {
   #listData = []
   cachedData = []
   #selectedAll = false
-  #url = `http://localhost:5555/api/user`
+  #url = `http://localhost:5555/api`
   #accessToken
 
   userVerification = new UserVerification()
@@ -47,7 +47,11 @@ export default class MainData {
     }
 
     if (localStorage.getItem('accessToken')) {
-      this.#accessToken = JSON.parse(localStorage.getItem('accessToken'))
+      try {
+        this.#accessToken = JSON.parse(localStorage.getItem('accessToken'))
+      } catch (e) {
+        await this.requestRefreshToken()
+      }
     }
 
     await this.setDataFromDB()
@@ -72,17 +76,19 @@ export default class MainData {
   requestRefreshToken = async () => {
     try {
       const tokens = await this.refreshToken()
-      if (tokens && !tokens.type) {
-        localStorage.setItem('accessToken', JSON.stringify(tokens.accessToken))
-        this.#accessToken = tokens.accessToken
+      if (tokens && tokens.content && !tokens.type) {
+        const { accessToken } = tokens.content[0]
+        localStorage.setItem('accessToken', JSON.stringify(accessToken))
+        this.#accessToken = accessToken
         return tokens
       } else throw tokens
     } catch (err) {
       if (err.reason === 'Unauthorized') {
         this.setToast('Session is expired', 'info')
-        setTimeout(logout, 3000)
+        setTimeout(async () => await logout(), 2000)
       } else {
-        logout()
+        this.setToast('Session had error')
+        setTimeout(async () => await logout(), 1000)
         return err
       }
     }
@@ -98,7 +104,7 @@ export default class MainData {
 
       data = await request(url, 'GET', null, this.setHeaders())
     }
-    return data
+    return data.content
   }
 
   postData = async (body) => {
@@ -111,7 +117,7 @@ export default class MainData {
 
       data = await request(url, 'POST', body, this.setHeaders())
     }
-    return data
+    return data.content[0]
   }
 
   putData = async (body) => {
@@ -124,7 +130,7 @@ export default class MainData {
 
       data = await request(url, 'PUT', body, this.setHeaders())
     }
-    return data
+    return data.content[0]
   }
 
   putMultipleData = async (body) => {
@@ -137,12 +143,12 @@ export default class MainData {
 
       data = await request(url, 'PUT', body, this.setHeaders())
     }
-    return data
+    return data.content
   }
 
   deleteData = async (body) => {
     const url = this.#url + `/todo/${body.id}`
-    let data = await request(url, 'DELETE', null, this.setHeaders())
+    let data = await request(url, 'DELETE', body, this.setHeaders())
 
     if (data.reason === 'Unauthorized') {
       let res = await this.requestRefreshToken()
@@ -150,7 +156,7 @@ export default class MainData {
 
       data = await request(url, 'DELETE', null, this.setHeaders())
     }
-    return data
+    return data.content[0]
   }
 
   setActionRequest = (action) => {

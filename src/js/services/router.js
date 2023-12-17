@@ -26,10 +26,6 @@ class Router {
     if (func) {
       func()
     }
-
-    if (window.location.pathname === '/logout') {
-      window.location.assign('/')
-    }
   }
 
   route = (target) => {

@@ -98,8 +98,57 @@ class LoginPage {
     fieldValidator.renderErrors()
   }
 
+  generateAcceptCookiesModal = () => {
+    const wrapper = document.createElement('div')
+    const modal = document.createElement('div')
+    const text = document.createElement('div')
+    const title = document.createElement('div')
+    const body = document.createElement('div')
+    const button = document.createElement('button')
+
+    wrapper.classList.add('accept-cookies-wrapper')
+    modal.classList.add('accept-cookies-modal')
+    text.classList.add('accept-cookies-text')
+    title.classList.add('title')
+    body.classList.add('body')
+    button.classList.add('accept-cookies-button', 'btn', 'save-btn')
+
+    title.textContent = 'This website uses cookies'
+    body.textContent =
+      'We use cookies to personalise content and ads, to provide social media features and to analyse our traffic. We also share information about your use of our site with our social media, advertising and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services.'
+    button.textContent = 'accept all'
+
+    text.append(title, body)
+    modal.append(text, button)
+    wrapper.append(modal)
+
+    return wrapper
+  }
+
+  removeAcceptCookiesModal = () => {
+    const cookieWrapper = document.querySelector('.accept-cookies-wrapper')
+    const button = cookieWrapper.querySelector('.accept-cookies-button')
+
+    button.addEventListener('click', () => {
+      cookieWrapper.classList.add('hide')
+      setTimeout(() => cookieWrapper.remove(), 1000)
+      localStorage.setItem('acceptCookies', true)
+    })
+  }
+
+  acceptCookies = () => {
+    if (!localStorage.getItem('acceptCookies')) {
+      setTimeout(() => {
+        const cookieWrapper = this.generateAcceptCookiesModal()
+        document.body.prepend(cookieWrapper)
+        this.removeAcceptCookiesModal()
+      }, 1000)
+    }
+  }
+
   validateAndLogin = () => {
     View()
+    this.acceptCookies()
 
     const inputs = document.querySelectorAll('input')
     const emailField = document.querySelector('#email')
@@ -133,11 +182,14 @@ class LoginPage {
 
           if (res && !res.type && res.message != 'Failed to fetch') {
             errorToast.setToast('Success', 'success')
-            localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+            localStorage.setItem(
+              'accessToken',
+              JSON.stringify(res.content[0].accessToken),
+            )
             setTimeout(() => {
               this.setLoggedIn(true)
               window.location.reload()
-            }, 1500)
+            }, 500)
           } else {
             errorToast.setToast(`Something went wrong - ${res.message}`)
           }

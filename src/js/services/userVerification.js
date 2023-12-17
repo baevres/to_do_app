@@ -6,15 +6,25 @@ class UserVerification {
 
   getUserByCreds = async (body) => {
     const url = this.#url + '/user/auth'
-    const data = await request(url, 'POST', body)
+    const data = await request(
+      url,
+      'POST',
+      body,
+      { 'Content-Type': 'application/json' },
+      'include',
+    )
     return data
   }
 
   refreshToken = async () => {
     const url = this.#url + '/user/auth/refresh'
-    const data = await request(url, 'POST', null, {
-      'Content-Type': 'application/json',
-    })
+    const data = await request(
+      url,
+      'POST',
+      null,
+      { 'Content-Type': 'text/plain' },
+      'include',
+    )
     return data
   }
 
