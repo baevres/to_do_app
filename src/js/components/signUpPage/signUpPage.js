@@ -175,7 +175,7 @@ const signUpPage = () => {
         if (value) {
           const result = await userRegistration.checkUniqueData(value, 'login')
           fieldValidator.toggleError(
-            result && result.length > 0,
+            result && result.content && result.content.length > 0,
             'Login is not unique',
           )
         }
@@ -188,7 +188,7 @@ const signUpPage = () => {
         if (value) {
           const res = await userRegistration.checkUniqueData(value)
           fieldValidator.toggleError(
-            res && res.length > 0,
+            res && res.content && res.content.length > 0,
             'Email is not unique',
           )
         }
@@ -241,18 +241,14 @@ const signUpPage = () => {
     if (errors.length === 0) {
       const res = await userRegistration.createNewUser()
 
-      if (res && !res.type) {
+      if (res && res.content.length === 1 && !res.type) {
         errorToast.setToast(
           'Success. You can log in with your credentials',
           'success',
         )
         e.target.reset()
-
         clearErrors()
-
-        setTimeout(() => {
-          window.location.assign('/')
-        }, 1500)
+        window.location.assign('/')
       } else {
         errorToast.setToast(`Something went wrong - ${res.message}`)
       }

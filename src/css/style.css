@@ -504,3 +504,66 @@ li .start div:hover {
     opacity: 0;
   }
 }
+
+.accept-cookies-wrapper {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(78, 82, 79, 0.1);
+  z-index: 5;
+  animation: appearingAnimation 0.6s ease-in-out forwards;
+}
+
+.accept-cookies-modal {
+  grid-auto-columns: auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  min-height: 150px;
+  background-color: white;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.accept-cookies-text {
+  padding: 15px 20px;
+}
+
+.accept-cookies-text .body {
+  font-size: 12px;
+  font-weight: 300;
+  padding-top: 10px;
+}
+
+.accept-cookies-button {
+  justify-self: center;
+  margin: 0;
+  margin-bottom: 15px;
+  padding: 0px 10px;
+  width: auto;
+}
+
+.accept-cookies-wrapper.hide {
+  animation: fadeOutAnimation 0.6s ease-in-out forwards;
+}
+
+@keyframes appearingAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutAnimation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
