@@ -1,0 +1,66 @@
+.user-info_wrapper {
+  position: fixed;
+  z-index: 100;
+  width: 305px;
+  right: 10px;
+  top: 100px;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 12px #091e4226,
+    0 0 1px #091e424f;
+}
+
+.user-info_content {
+  border-radius: 10px;
+  position: relative;
+}
+
+.user-info_head {
+  background-image: linear-gradient(to bottom, #0c66e4 0%, #0c66e4 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 82px;
+  height: 82px;
+}
+
+.user-info_bottom {
+  background-color: #fff;
+  height: 45px;
+}
+
+.user-info_account {
+  position: absolute;
+  top: 23px;
+  left: 12px;
+  width: 92%;
+  display: flex;
+}
+
+.share-board .user-info_account .account-icon {
+  height: 86px;
+  width: 86px;
+  font-size: 43px;
+}
+
+.share-board .user-info_account .account-icon:hover {
+  background-color: #051d40;
+  cursor: default;
+}
+
+.account-info {
+  margin-top: 10px;
+}
+
+.close {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+}
+
+.close:hover {
+  color: #b6c2d7b8;
+  cursor: pointer;
+}
+
+.close .icon-span {
+  width: 20px;
+}

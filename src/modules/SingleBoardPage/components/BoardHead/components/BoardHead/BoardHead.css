@@ -1,0 +1,67 @@
+.board-head_wrapper {
+  background-color: rgba(25, 71, 224, 0.9);
+  color: white;
+  border-left: 1.2px solid hsla(0, 0%, 100%, 0.5);
+  border-bottom: 1.2px solid hsla(0, 0%, 100%, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board-head_title {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 23px;
+  font-weight: 600;
+}
+
+.board-head_title:hover {
+  background-color: #a6c5e229;
+  cursor: pointer;
+}
+
+.board-title_form {
+  margin-left: 10px;
+}
+
+.board-title_input {
+  display: block;
+  width: auto;
+  box-sizing: content-box;
+  font-size: 23px;
+  font-weight: 600;
+  border: none;
+  outline: rgba(25, 43, 86, 0.942) solid 3px;
+  padding: 0 10px;
+}
+
+.board-tools {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.tool-btn {
+  width: auto;
+  padding: 8px;
+  margin-right: 35px;
+  height: 32px;
+  font-weight: 500;
+  font-size: 15px;
+  background-color: #dfe1e6;
+  color: #172b4d;
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tool-btn:hover {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.tool-btn .icon-span {
+  width: 18px;
+}

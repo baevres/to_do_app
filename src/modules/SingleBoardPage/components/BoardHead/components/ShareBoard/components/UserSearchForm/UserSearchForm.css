@@ -1,0 +1,49 @@
+.share-form_wrapper {
+  position: relative;
+  margin-top: 20px;
+}
+
+.share-board_form {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  align-items: center;
+  gap: 10px;
+}
+
+.share-board_form input {
+  border: none;
+  outline: rgba(114, 115, 116, 0.8) solid 2px;
+  height: 34px;
+  width: 90%;
+  font-size: 16px;
+  transition: none;
+}
+
+.share-board_form label {
+  font-size: 16px;
+}
+
+.share-board_form input:focus {
+  outline: rgba(62, 114, 236, 0.8) solid 3px;
+}
+
+.share-board_form input::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.share-board_form input:focus::placeholder {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.share-board_form .edit-item-input:focus + .input-label {
+  top: -2px;
+}
+
+.share-btn .save-btn {
+  width: 95px;
+  height: 37px;
+  margin-left: 0;
+  font-size: 17px;
+}

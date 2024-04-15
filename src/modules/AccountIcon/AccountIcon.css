@@ -1,0 +1,20 @@
+.account-icon {
+  background-color: #051d40;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.account-icon:hover {
+  background-color: #051d409b;
+  cursor: pointer;
+}
+
+.account-icon > div {
+  color: #ffffff;
+  text-transform: uppercase;
+}

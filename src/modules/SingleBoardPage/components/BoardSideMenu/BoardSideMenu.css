@@ -1,0 +1,91 @@
+.side-menu_wrapper {
+  position: relative;
+  grid-row: 1/3;
+  top: 0;
+  background-color: rgba(62, 106, 250, 0.9);
+  color: white;
+}
+
+.side-menu_user-boards > div {
+  padding: 0px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 54px;
+  position: relative;
+}
+
+.add-new-board {
+  padding: 5px;
+}
+
+.add-new-board:hover {
+  cursor: pointer;
+  background-color: rgba(168, 185, 242, 0.45);
+  border-radius: 3px;
+}
+
+.side-menu_user-boards .new-board-modal {
+  top: 50px;
+  left: 260px;
+  z-index: 999;
+  background-color: #fff;
+}
+
+.side-menu_user-boards .new-board-modal .input-label {
+  color: black;
+}
+
+.side-menu_boards-list li {
+  margin-top: 0;
+  padding: 6px 12px;
+  position: relative;
+}
+
+.side-menu_boards-list li:hover {
+  cursor: pointer;
+  background-color: rgba(168, 185, 242, 0.45);
+}
+
+.selected-board {
+  background-color: rgba(168, 185, 242, 0.8);
+}
+
+.side-menu_boards-list li .board-img {
+  width: 32px;
+  height: 20px;
+  background-color: rgba(54, 89, 203, 0.7);
+  margin-right: 10px;
+}
+
+.side-menu_boards-list li > a {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+  color: white;
+}
+
+.remove-board {
+  position: absolute;
+  right: 11px;
+  top: 3px;
+  width: 30px;
+  height: 27px;
+  display: none;
+  border-radius: 3px;
+}
+
+.side-menu_boards-list li:hover .remove-board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.remove-board:hover {
+  background-color: rgba(168, 185, 242, 0.8);
+  cursor: pointer;
+}
+
+.remove-board .icon-span {
+  width: 18px;
+}

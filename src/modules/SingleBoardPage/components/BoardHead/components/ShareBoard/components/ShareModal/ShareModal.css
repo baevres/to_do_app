@@ -1,0 +1,62 @@
+.share-modal {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.share-modal_wrapper {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 200;
+  background-color: #fff;
+  color: #172b4d;
+  box-shadow:
+    0px 1px 1px #091e4240,
+    0px 0px 1px #091e424f;
+  border-radius: 12px;
+  padding: 25px;
+  padding-bottom: 20px;
+  width: 530px;
+}
+
+.share-modal_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.share-modal_header .icon-span svg {
+  width: 30px;
+  height: 30px;
+}
+
+.share-modal_header .icon-span:hover {
+  cursor: pointer;
+}
+
+.members-list {
+  margin-top: 20px;
+}
+
+.members-list li {
+  justify-content: start;
+  align-items: center;
+  gap: 2px;
+}
+
+.members-list .account-icon:hover {
+  cursor: default;
+  background-color: #051d40;
+}
+
+.member-info {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 300;
+}

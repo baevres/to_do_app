@@ -1,0 +1,157 @@
+.list-actions {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board-task_edit {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.board-task_edit:hover,
+.list-actions_close:hover,
+.back-arrow:hover {
+  background-color: #091e4224;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.back-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.list-actions_wrapper {
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 12px #091e4226,
+    0 0 1px #091e424f;
+  left: 0;
+  top: 35px;
+  width: 304px;
+  z-index: 70;
+}
+
+.list-actions_header {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  padding: 4px 8px;
+  position: relative;
+  text-align: center;
+}
+
+.list-actions_content {
+  padding: 0 12px 12px;
+}
+
+.list-actions_content li {
+  margin: 0;
+  display: block;
+}
+
+.list-actions_content li div {
+  color: #172b4d;
+  cursor: pointer;
+  display: block;
+  font-weight: 400;
+  margin: 0 -12px;
+  padding: 6px 12px;
+}
+
+.list-actions_content li div:hover {
+  background-color: #091e4224;
+}
+
+.list-actions_wrapper hr {
+  margin: 8px 0;
+  background-color: #091e4224;
+  border: 0;
+  height: 1px;
+}
+
+.back-arrow {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  height: 100%;
+  width: 100%;
+}
+
+.move-list_form {
+  margin-top: 10px;
+}
+
+.move-list_btn {
+  margin: 17px 0 0;
+}
+
+.move-list_btn .save-btn {
+  margin-left: 0;
+  width: 95px;
+  height: 35px;
+}
+
+.move-list_form .field-wrapper {
+  margin-top: 15px;
+}
+
+.move-list_form select {
+  width: 100%;
+  height: 40px;
+  font-size: 18px;
+}
+
+.boards-list {
+  margin-top: 15px;
+}
+
+.boards-list li {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+.boards-list li div {
+  width: 100%;
+}
+
+.list-actions_content li div.current {
+  cursor: default;
+  pointer-events: none;
+  background: none;
+  color: #606061d1;
+}
+
+.remove-all {
+  margin-top: 12px;
+}
+
+.remove-all div {
+  color: #606061d1;
+  font-size: 14px;
+}
+
+.remove-all button {
+  color: #ffffff;
+  background-color: #ca3521;
+  width: 100%;
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.remove-all button:hover {
+  cursor: pointer;
+  background-color: #ae2e24;
+}

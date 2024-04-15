@@ -1,0 +1,11 @@
+.menu-board {
+  background-color: rgba(62, 106, 250, 0.9);
+  border-bottom: 1.2px solid hsla(0, 0%, 100%, 0.3);
+}
+
+.board-page-content {
+  display: grid;
+  grid-template-columns: 260px auto;
+  grid-template-rows: 55px 1fr;
+  height: calc(100vh - 47px);
+}

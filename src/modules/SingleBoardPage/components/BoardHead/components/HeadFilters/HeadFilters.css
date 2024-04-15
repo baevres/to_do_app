@@ -1,0 +1,110 @@
+.head-filter_wrapper {
+  position: relative;
+}
+
+.head-filter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 13px;
+  padding: 10px 3px;
+  position: relative;
+}
+
+.head-filter:hover {
+  background-color: #a6c5e229;
+  cursor: pointer;
+}
+
+.head-filter .icon-span {
+  width: 18px;
+  fill: #ffff;
+}
+
+.head-filter.tool-btn {
+  height: 16px;
+  width: 74px;
+  margin-right: 0;
+  padding: 8px 3px;
+  justify-content: center;
+}
+
+.tool-btn .icon-span {
+  fill: #000;
+}
+
+.filter-modal_wrapper {
+  position: fixed;
+  background-color: #ffffff;
+  color: #172b4d;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 12px #091e4226,
+    0 0 1px #091e424f;
+  right: 10px;
+  top: 98px;
+  width: 375px;
+  z-index: 70;
+}
+
+.filter-modal_header {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  padding: 4px 8px;
+  position: relative;
+  text-align: center;
+}
+
+.filter-modal_close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+}
+
+.filter-modal_close:hover {
+  background-color: #091e4224;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.filter-modal_close span {
+  width: 18px;
+}
+
+.filter-modal_content {
+  padding: 0 12px 12px;
+}
+
+.filter-modal_content h5 {
+  font-weight: 400;
+}
+
+.filter-modal_content li {
+  margin: 0;
+  margin-top: 5px;
+  display: block;
+}
+
+.filter-modal_label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filter-modal_label input {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin-left: 5px;
+}
+
+.filter-modal_content li div {
+  color: #172b4d;
+  cursor: pointer;
+  display: block;
+  font-weight: 400;
+  margin: 0 -12px;
+  padding: 6px 12px;
+}

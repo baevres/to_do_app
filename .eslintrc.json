@@ -7,13 +7,49 @@
     "extends": [
         "airbnb-base",
         "airbnb",
-        "prettier"],
+        "prettier",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "rules": {
         "linebreak-style": ["off"],
-        "import/extensions": ["never"]
-    }
+        "no-unused-vars": "off",
+        "import/extensions": 0,
+        "import/no-extraneous-dependencies": [1, {"devDependencies": true}],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/prop-types": 0,
+        "react/function-component-definition": "off",
+        "arrow-body-style": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/self-closing-comp": "off",
+        "class-methods-use-this": ["error", { "enforceForClassFields": false }],
+        "lines-between-class-members": "off",
+        "prefer-destructuring":"off",
+        "array-callback-return": "off",
+        "react/destructuring-assignment": "off",
+        "no-shadow": "off",
+        "default-case": "off",
+        "no-case-declarations": "off",
+        "no-param-reassign": "off",
+        "no-lonely-if": "off",
+        "prefer-template": "off",
+        "no-return-await": "off",
+        "no-async-promise-executor": "off",
+        "no-restricted-syntax": "off",
+        "no-await-in-loop": "off",
+        "react/button-has-type": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        "react/no-array-index-key": "off",
+        "react/display-name": "off",
+        "no-use-before-define": "off",
+        "import/prefer-default-export": "off",
+        "jsx-a11y/label-has-associated-control": "off",
+        "one-var": "off"
+    },
+    "plugins": ["react"]
 }

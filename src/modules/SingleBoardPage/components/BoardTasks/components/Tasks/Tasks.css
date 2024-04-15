@@ -1,0 +1,106 @@
+.task-wrapper {
+  cursor: pointer;
+  min-height: 36px;
+  position: relative;
+  scroll-margin: 8px;
+  border-radius: 8px;
+  box-shadow:
+    0px 1px 1px #091e4240,
+    0px 0px 1px #091e424f;
+  background-color: #ffffff;
+  color: rgb(68, 84, 111);
+}
+
+.edit-task_form {
+  position: fixed;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  box-shadow:
+    0px 1px 1px #091e4240,
+    0px 0px 1px #091e424f;
+  background-color: #ffffff;
+  color: rgb(68, 84, 111);
+  z-index: 200;
+  outline: rgba(62, 114, 236, 0.8) solid 2px;
+}
+
+.edit-task_textarea {
+  outline: none;
+  border-radius: 8px;
+  border: none;
+  width: 240px;
+  padding: 8px 12px 4px;
+  color: rgb(68, 84, 111);
+  resize: none;
+  font-size: 16px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.task-content {
+  display: block;
+  position: relative;
+  padding: 8px 12px 4px;
+  text-decoration: none;
+  color: rgb(68, 84, 111);
+}
+
+.task-edit {
+  position: absolute;
+  right: 12px;
+  top: 5px;
+  width: 28px;
+  height: 28px;
+  display: none;
+  border-radius: 50%;
+}
+
+.task-edit:hover {
+  background-color: #091e4224;
+}
+
+.task-wrapper:hover .task-edit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-edit .icon-span {
+  width: 15px;
+  height: 15px;
+}
+
+.checked {
+  background-color: rgba(189, 184, 184, 0.74);
+  text-decoration: line-through;
+}
+
+.form-btns {
+  position: absolute;
+  z-index: 10;
+  bottom: -38px;
+}
+
+.form-btns .save-btn {
+  width: 75px;
+  height: 30px;
+  background-color: rgb(62, 106, 250);
+  margin-right: 15px;
+  margin-left: 0;
+}
+
+.form-btns .save-btn:hover {
+  background-color: rgb(36, 82, 236);
+}
+
+.form-btns .delete-btn {
+  width: 110px;
+}

@@ -1,0 +1,35 @@
+.board-task_head {
+  position: relative;
+  margin-bottom: 8px;
+  padding: 8px 5px 0;
+  display: grid;
+  grid-template-columns: 225px 35px;
+  min-height: 35px;
+  color: #172b4d;
+}
+
+.board-task_title:hover {
+  cursor: pointer;
+}
+
+form.board-task_title {
+  padding-top: 3px;
+  padding-left: 0;
+  position: relative;
+}
+
+.board-task_input {
+  padding: 0 12px;
+  outline: rgba(62, 114, 236, 0.8) solid 3px;
+  border-radius: 8px;
+  border: none;
+  width: 198px;
+  height: 100%;
+  font-size: 16px;
+  cursor: text;
+  transition: 0.3s all;
+}
+
+.board-task_title {
+  padding: 6px 8px 6px 12px;
+}

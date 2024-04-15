@@ -1,0 +1,83 @@
+.new-board-modal {
+  width: 310px;
+  position: fixed;
+  right: 40px;
+  top: 130px;
+  border-radius: 8px;
+  box-shadow:
+    0px 8px 12px #091e4226,
+    0px 0px 1px #091e424f;
+}
+
+.new-board-modal__header {
+  padding: 10px 8px 4px 8px;
+  position: relative;
+  text-align: center;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 32px 1fr 32px;
+}
+
+.new-board-modal__header h2 {
+  color: #44546f;
+  font-size: 18px;
+  font-weight: 500;
+  grid-column: 2;
+}
+
+.new-board-modal__header button {
+  grid-column: 3;
+  background: transparent;
+  color: #626f86;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-board-modal__header button:hover {
+  cursor: pointer;
+  background-color: rgba(98, 111, 134, 0.2);
+}
+
+.new-board-modal__content {
+  padding: 10px;
+  padding-top: 3px;
+}
+
+.new-board-modal__content-form input::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.new-board-modal__content-form input:focus::placeholder {
+  font-size: 18px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.new-board-modal__content-form label {
+  font-size: 16px;
+}
+
+.new-board-modal__content-form .edit-item-input {
+  width: 90%;
+  height: 35px;
+}
+
+.new-board-modal__content-form input.error {
+  border-color: rgba(250, 70, 100, 0.7);
+  outline-color: rgb(250, 70, 100);
+}
+
+.new-board-modal__content-btn {
+  margin-top: 17px;
+}
+
+.new-board-modal__content-btn .save-btn {
+  width: 100%;
+  margin-left: 0;
+}
