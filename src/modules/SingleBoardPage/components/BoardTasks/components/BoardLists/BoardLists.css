@@ -2,7 +2,8 @@
   background-color: rgba(62, 114, 236, 0.8);
   border-left: 1.2px solid hsla(0, 0%, 100%, 0.5);
   position: relative;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   scrollbar-color: #fff6 #00000026;
   scrollbar-width: auto;
 }

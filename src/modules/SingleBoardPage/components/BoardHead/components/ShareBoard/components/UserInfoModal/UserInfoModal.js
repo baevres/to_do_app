@@ -5,7 +5,7 @@ import AccountIcon from '../../../../../../../AccountIcon'
 import { Close } from '../../../../../../../../UI'
 import './UserInfoModal.css'
 
-const UserInfoModal = ({ userData, onClose }) => {
+const UserInfoModal = ({ userData, onClose, isModal }) => {
   const modalRef = useRef(null)
 
   const handleClickOutside = (event) => {
@@ -21,15 +21,17 @@ const UserInfoModal = ({ userData, onClose }) => {
     return () => {
       root.removeEventListener('click', handleClickOutside)
     }
-  }, [])
+  }, [isModal])
+
+  if (!isModal) return null
 
   return (
     <div className="user-info_wrapper" ref={modalRef}>
       <div className="user-info_content">
         <div className="user-info_head"></div>
         <div className="user-info_bottom"></div>
-        <div className="user-info_account">
-          <AccountIcon />
+        <div className="user-info_account" id="infoAccount">
+          <AccountIcon user={userData} />
           <div className="account-info">
             <div>{userData.name}</div>
             <div className="member-info">{userData.email}</div>

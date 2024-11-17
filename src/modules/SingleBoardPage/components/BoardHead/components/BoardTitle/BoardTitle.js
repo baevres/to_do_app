@@ -2,11 +2,9 @@ import { useContext, useState, useEffect } from 'react'
 
 import { useBoardsService } from '../../../../../BoardsPage'
 import BoardDataContext from '../../../../context/BoardDataContext'
-import { ToastContext } from '../../../../../ToastStack'
 
 const BoardTitle = () => {
   const { boardId, boardTitle, setNewBoardTitle } = useContext(BoardDataContext)
-  const { setNewToast } = useContext(ToastContext)
   const [isForm, setForm] = useState(false)
   const [value, setValue] = useState('')
   const { updateBoard } = useBoardsService()
@@ -22,18 +20,12 @@ const BoardTitle = () => {
       title: value,
       closed: false,
     }
-    updateBoard(boardId, payload)
-      .then((response) => {
-        if (response.reason) throw response
-
-        const resp = response.content[0].title
-        setValue(resp)
-        setNewBoardTitle(resp)
-        document.title = `${resp} | ToDo`
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    updateBoard(boardId, payload).then((response) => {
+      const resp = response.content[0].title
+      setValue(resp)
+      setNewBoardTitle(resp)
+      document.title = `${resp} | ToDo`
+    })
     setForm(false)
   }
 

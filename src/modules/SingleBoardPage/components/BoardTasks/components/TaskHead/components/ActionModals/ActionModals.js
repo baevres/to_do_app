@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useContext } from 'react'
 
 import FormTemplate from '../../../../../../../FormTemplate'
 
@@ -6,8 +6,6 @@ import useTasksService from '../../../../../../services/useTasksService'
 import BoardDataContext from '../../../../../../context/BoardDataContext'
 import TaskListDataContext from '../../../../context/TaskListDataContext'
 import TasksContext from '../../../../../../context/TasksContext'
-
-import { ToastContext } from '../../../../../../../ToastStack'
 
 const ActionModals = ({ action, closeModal }) => {
   const {
@@ -17,7 +15,6 @@ const ActionModals = ({ action, closeModal }) => {
     deleteTasks,
     getBoardTasks,
   } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { boardId, boardList, setTaskLists, taskLists } =
     useContext(BoardDataContext)
   const { taskListId } = useContext(TaskListDataContext)
@@ -72,18 +69,12 @@ const ActionModals = ({ action, closeModal }) => {
             title: board,
             board_id: boardSelect,
           }
-          updateTaskList(boardId, taskListId, payload)
-            .then((response) => {
-              if (response.reason) throw response
-
-              const newTaskLists = taskLists.filter(
-                (taskList) => taskList.id === response.content.id,
-              )
-              setTaskLists(newTaskLists)
-            })
-            .catch((err) => {
-              setNewToast(err.message)
-            })
+          updateTaskList(boardId, taskListId, payload).then((response) => {
+            const newTaskLists = taskLists.filter(
+              (taskList) => taskList.id === response.content.id,
+            )
+            setTaskLists(newTaskLists)
+          })
         }
 
         closeModal()
@@ -111,15 +102,9 @@ const ActionModals = ({ action, closeModal }) => {
             }
           })
 
-          updateTasks(boardId, taskListId, payload)
-            .then((response) => {
-              if (response.reason) throw response
-
-              setNewTasks(response.content)
-            })
-            .catch((err) => {
-              setNewToast(err.message)
-            })
+          updateTasks(boardId, taskListId, payload).then((response) => {
+            setNewTasks(response.content)
+          })
         }
 
         closeModal()
@@ -143,23 +128,11 @@ const ActionModals = ({ action, closeModal }) => {
 
     case 'remove all tasks':
       const removeAllTasks = () => {
-        deleteTasks(boardId, taskListId)
-          .then((response) => {
-            if (response.reason) throw response
-
-            getBoardTasks(boardId)
-              .then((response) => {
-                if (response.reason) throw response
-
-                setNewTasks(response.content)
-              })
-              .catch((err) => {
-                setNewToast(err.message)
-              })
+        deleteTasks(boardId, taskListId).then((response) => {
+          getBoardTasks(boardId).then((response) => {
+            setNewTasks(response.content)
           })
-          .catch((err) => {
-            setNewToast(err.message)
-          })
+        })
 
         closeModal()
       }
@@ -173,19 +146,15 @@ const ActionModals = ({ action, closeModal }) => {
 
     case 'remove the list':
       submitFunc = () => {
-        deleteTaskList(boardId, taskListId, { id: taskListId })
-          .then((response) => {
-            if (response.reason) throw response
-
+        deleteTaskList(boardId, taskListId, { id: taskListId }).then(
+          (response) => {
             const newTaskLists = taskLists.filter(
               (taskList) => taskList.id !== response.content[0].id,
             )
             setTaskLists(newTaskLists)
             closeModal()
-          })
-          .catch((err) => {
-            setNewToast(err.message)
-          })
+          },
+        )
       }
       return (
         <div className="remove-all">

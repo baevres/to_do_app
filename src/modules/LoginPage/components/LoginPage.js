@@ -1,13 +1,15 @@
 import { useContext } from 'react'
 
-import FormTemplate from '../../FormTemplate/FormTemplate.js'
+import FormTemplate, { FormTemplateNew } from '../../FormTemplate'
 
 import useUserVerification from '../services/useUserVerification.js'
 import PasswordValidator from '../../../utils/passwordValidator.js'
 import { ToastContext } from '../../ToastStack'
+import LoggedInContext from '../../../context/LoggedInContext.js'
 
 const LoginPage = () => {
-  const { verifyUser, setLoggedIn } = useUserVerification()
+  const { verifyUser } = useUserVerification()
+  const { setLoggedIn } = useContext(LoggedInContext)
   const { setNewToast } = useContext(ToastContext)
 
   const fieldsOpts = [
@@ -71,12 +73,8 @@ const LoginPage = () => {
           'accessToken',
           JSON.stringify(res.content[0].accessToken),
         )
-        setTimeout(() => {
-          setLoggedIn(true)
-          window.location.reload()
-        }, 1000)
-      } else {
-        setNewToast(res.message)
+        localStorage.setItem('loggedIn', JSON.stringify(true))
+        setLoggedIn(true)
       }
     } catch (err) {
       setNewToast(`Something went wrong`)

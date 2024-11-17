@@ -6,10 +6,40 @@
     0 0 1px #091e424f;
   border-radius: 4px;
   width: 77%;
+  max-height: 256px;
   margin-top: 5px;
+  overflow-y: auto;
+  z-index: 200;
 }
 
 .not-found {
   padding: 20px;
   font-size: 14px;
+}
+
+.user-search_list {
+  scrollbar-color: #0000001f rgba(133, 131, 131, 0.31);
+}
+
+.user-search_list.members-list {
+  margin-top: 0;
+}
+
+.user-search_list ul {
+  padding: 13px 10px;
+  padding-bottom: 10px;
+}
+
+.user-search_list li {
+  margin-top: 5px;
+  height: 50px;
+}
+
+.user-search_list li:hover {
+  cursor: pointer;
+  background-color: #091e4224;
+}
+
+.user-search_list li.blocked:hover {
+  cursor: not-allowed;
 }

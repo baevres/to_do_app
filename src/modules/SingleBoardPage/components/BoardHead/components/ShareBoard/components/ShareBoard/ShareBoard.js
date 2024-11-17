@@ -1,45 +1,59 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
-import AccountIcon from '../../../../../../../AccountIcon'
-import UserInfoModal from '../UserInfoModal/UserInfoModal'
+import BoardUsers from '../BoardUsers/BoardUsers'
 import ShareModal from '../ShareModal/ShareModal'
 
-import UserDataContext from '../../../../../../../../context/UserDataContext'
+import { useBoardsService } from '../../../../../../../BoardsPage'
+import BoardDataContext from '../../../../../../context/BoardDataContext'
+import InvitedUsersContext from '../../context/InvitedUsersContext'
 
 import { Invite } from '../../../../../../../../UI'
 import './ShareBoard.css'
 
 const ShareBoard = () => {
   const [isShareModal, setShareModal] = useState(false)
-  const [isUserInfoModal, setUserInfoModal] = useState(false)
-  const { userData } = useContext(UserDataContext)
+  const { boardId } = useContext(BoardDataContext)
+  const { getBoardInvitedUsers } = useBoardsService()
+
+  const [invitedUsers, setInvitedUsers] = useState({
+    usersList: [],
+    setUsersList(newUsers) {
+      setInvitedUsers((invitedUsers) => {
+        return {
+          ...invitedUsers,
+          usersList: newUsers,
+        }
+      })
+    },
+  })
 
   const onCloseModal = () => {
     setShareModal(false)
   }
 
-  const onCloseUserInfoModal = () => {
-    setUserInfoModal(false)
-  }
+  useEffect(() => {
+    getBoardInvitedUsers(boardId).then((response) => {
+      setInvitedUsers((invitedUsers) => {
+        return {
+          ...invitedUsers,
+          usersList: response.content[0].invited_users,
+        }
+      })
+    })
+  }, [boardId])
 
   return (
-    <div className="share-board">
-      <div className="accont-wrapper">
-        <div onClick={() => setUserInfoModal(true)}>
-          <AccountIcon />
-        </div>
+    <InvitedUsersContext.Provider value={invitedUsers}>
+      <div className="share-board">
+        <BoardUsers />
 
-        {isUserInfoModal ? (
-          <UserInfoModal userData={userData} onClose={onCloseUserInfoModal} />
-        ) : null}
+        <button className="tool-btn" onClick={() => setShareModal(true)}>
+          <Invite />
+          Share
+        </button>
+        {isShareModal ? <ShareModal onCloseModal={onCloseModal} /> : null}
       </div>
-
-      <button className="tool-btn" onClick={() => setShareModal(true)}>
-        <Invite />
-        Share
-      </button>
-      {isShareModal ? <ShareModal onCloseModal={onCloseModal} /> : null}
-    </div>
+    </InvitedUsersContext.Provider>
   )
 }
 

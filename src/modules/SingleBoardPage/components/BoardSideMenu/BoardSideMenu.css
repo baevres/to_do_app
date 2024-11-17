@@ -1,4 +1,6 @@
 .side-menu_wrapper {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
   position: relative;
   grid-row: 1/3;
   top: 0;
@@ -6,13 +8,27 @@
   color: white;
 }
 
+.side-menu_user-boards {
+  display: grid;
+  grid-template-rows: 54px 100%;
+}
+
+.side-menu_user-boards.shared {
+  border-top: 1.2px solid hsla(0, 0%, 100%, 0.3);
+}
+
 .side-menu_user-boards > div {
   padding: 0px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 54px;
   position: relative;
+}
+
+.side-menu_user-boards ul {
+  max-height: 291.3px;
+  overflow-y: auto;
+  scrollbar-color: #fff6 #00000026;
 }
 
 .add-new-board {
@@ -26,8 +42,8 @@
 }
 
 .side-menu_user-boards .new-board-modal {
-  top: 50px;
-  left: 260px;
+  top: 47px;
+  left: 261px;
   z-index: 999;
   background-color: #fff;
 }

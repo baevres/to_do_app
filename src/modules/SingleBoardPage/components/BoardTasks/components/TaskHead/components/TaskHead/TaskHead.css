@@ -19,7 +19,7 @@ form.board-task_title {
 }
 
 .board-task_input {
-  padding: 0 12px;
+  padding: 0 10px;
   outline: rgba(62, 114, 236, 0.8) solid 3px;
   border-radius: 8px;
   border: none;
@@ -31,5 +31,5 @@ form.board-task_title {
 }
 
 .board-task_title {
-  padding: 6px 8px 6px 12px;
+  padding: 6px 8px 6px 10px;
 }

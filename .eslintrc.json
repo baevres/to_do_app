@@ -49,7 +49,11 @@
         "no-use-before-define": "off",
         "import/prefer-default-export": "off",
         "jsx-a11y/label-has-associated-control": "off",
-        "one-var": "off"
+        "one-var": "off",
+        "react/jsx-boolean-value": "off",
+        "react/jsx-props-no-spreading": "off",
+        "no-loop-func": "off",
+        "no-else-return": "off"
     },
     "plugins": ["react"]
 }

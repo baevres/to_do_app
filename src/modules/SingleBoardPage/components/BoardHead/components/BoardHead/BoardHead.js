@@ -7,9 +7,10 @@ import ShareBoard from '../ShareBoard'
 
 import { useBoardsService } from '../../../../../BoardsPage'
 import BoardDataContext from '../../../../context/BoardDataContext'
-import { ToastContext } from '../../../../../ToastStack'
+import useSharedBoardsService from '../../../../../../services/useSharedBoardsService'
+import UserDataContext from '../../../../../../context/UserDataContext'
 
-import { Close } from '../../../../../../UI'
+import { Close, Leave } from '../../../../../../UI'
 import './BoardHead.css'
 
 const BoardHead = () => {
@@ -19,32 +20,39 @@ const BoardHead = () => {
       <div className="board-tools">
         <HeadFilters />
         <ShareBoard />
-        <RemoveBoard />
+        <BoardActionBtn />
       </div>
     </div>
   )
 }
 
-const RemoveBoard = () => {
-  const { boardId } = useContext(BoardDataContext)
-  const { setNewToast } = useContext(ToastContext)
+const BoardActionBtn = () => {
+  const { boardId, isOwner, owner } = useContext(BoardDataContext)
+  const { userData } = useContext(UserDataContext)
   const { deleteBoard } = useBoardsService()
+  const { deleteInvitedUser } = useSharedBoardsService()
   const navigate = useNavigate()
 
-  const onRemove = () => {
-    deleteBoard(boardId, { id: boardId })
-      .then((response) => {
-        if (response.reason) throw response
-
-        navigate('/')
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+  const onRemoveBoard = () => {
+    deleteBoard(boardId, { id: boardId }).then((response) => {
+      navigate('/')
+    })
   }
 
-  return (
-    <button className="tool-btn" onClick={onRemove}>
+  const onLeaveBoard = () => {
+    const payload = { board_id: boardId, user_id: userData.id }
+    deleteInvitedUser(boardId, payload).then((response) => {
+      navigate('/')
+    })
+  }
+
+  return !isOwner && owner.id ? (
+    <button className="tool-btn" onClick={onLeaveBoard}>
+      <Leave />
+      Leave board
+    </button>
+  ) : (
+    <button className="tool-btn" onClick={onRemoveBoard}>
       <Close />
       Remove board
     </button>

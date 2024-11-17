@@ -10,21 +10,31 @@
   gap: 10px;
 }
 
-.share-board_form input {
+.share-board_form .edit-item-input {
   border: none;
   outline: rgba(114, 115, 116, 0.8) solid 2px;
-  height: 34px;
+  min-height: 27px;
   width: 90%;
   font-size: 16px;
   transition: none;
+  padding: 5px 12px;
 }
 
 .share-board_form label {
   font-size: 16px;
+  left: 7px;
 }
 
-.share-board_form input:focus {
-  outline: rgba(62, 114, 236, 0.8) solid 3px;
+.share-board_form .share-form_field:focus-within {
+  outline: rgba(62, 114, 236, 0.8) solid 2px;
+}
+
+.share-board_form input {
+  width: auto;
+  height: inherit;
+  outline: none;
+  border: none;
+  font-size: 16px;
 }
 
 .share-board_form input::placeholder {
@@ -37,8 +47,12 @@
   transition: opacity 0.3s;
 }
 
-.share-board_form .edit-item-input:focus + .input-label {
+.share-board_form input:valid + .input-label,
+.share-board_form input:focus + .input-label {
   top: -2px;
+  left: 7px;
+  background-color: #fff;
+  font-size: 14px;
 }
 
 .share-btn .save-btn {
@@ -46,4 +60,48 @@
   height: 37px;
   margin-left: 0;
   font-size: 17px;
+}
+
+.share-btn .save-btn:hover {
+  background-color: #0055cc;
+}
+
+.share-form_field {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.selected-user label {
+  top: -2px;
+  left: 7px;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.selected-user_option {
+  padding: 0 4px;
+  background-color: #091e420f;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 25px;
+}
+
+.selected-user_option:hover {
+  cursor: default;
+}
+
+.selected-user_close svg {
+  width: 18px;
+}
+
+.selected-user_close:hover {
+  cursor: pointer;
+  color: rgba(62, 114, 236, 0.8);
 }

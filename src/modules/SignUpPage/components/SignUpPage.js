@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import FormTemplate from '../../FormTemplate'
 
@@ -9,6 +10,7 @@ import { ToastContext } from '../../ToastStack'
 const SignUpPage = () => {
   const { checkUniqueData, createNewUser } = useUserRegistration()
   const { setNewToast } = useContext(ToastContext)
+  const navigate = useNavigate()
 
   const fieldsOpts = [
     {
@@ -189,9 +191,7 @@ const SignUpPage = () => {
     if (res && res.content.length === 1 && !res.type) {
       setNewToast('Success. You can log in with your credentials', 'success')
 
-      window.location.assign('/')
-    } else {
-      setNewToast(res.message)
+      navigate('/')
     }
   }
 

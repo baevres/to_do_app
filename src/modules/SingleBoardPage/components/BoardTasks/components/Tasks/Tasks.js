@@ -4,7 +4,6 @@ import useTasksService from '../../../../services/useTasksService'
 import BoardDataContext from '../../../../context/BoardDataContext'
 import TaskListDataContext from '../../context/TaskListDataContext'
 import TasksContext from '../../../../context/TasksContext'
-import { ToastContext } from '../../../../../ToastStack'
 
 import { EditPencil } from '../../../../../../UI'
 
@@ -34,7 +33,6 @@ const SingleTask = ({ task: { id, title, checked } }) => {
   const { taskListId } = useContext(TaskListDataContext)
   const { updateSingleTask, deleteSingleTask, getBoardTasks } =
     useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { tasks, setNewTasks, taskFilter } = useContext(TasksContext)
 
   const formRef = useRef(null)
@@ -49,15 +47,11 @@ const SingleTask = ({ task: { id, title, checked } }) => {
       ...taskData,
       title: value,
     }
-    updateSingleTask(boardId, taskListId, taskData.id, newTaskData)
-      .then((response) => {
-        if (response.reason) throw response
-
+    updateSingleTask(boardId, taskListId, taskData.id, newTaskData).then(
+      (response) => {
         setTaskData(response.content[0])
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+      },
+    )
 
     setForm(false)
   }
@@ -73,40 +67,26 @@ const SingleTask = ({ task: { id, title, checked } }) => {
       ...taskData,
       checked: !taskData.checked,
     }
-    updateSingleTask(boardId, taskListId, taskData.id, newTaskData)
-      .then((response) => {
-        if (response.reason) throw response
-
+    updateSingleTask(boardId, taskListId, taskData.id, newTaskData).then(
+      (response) => {
         setTaskData(response.content[0])
 
         if (taskFilter !== 'all') {
-          getBoardTasks(boardId, taskFilter)
-            .then((response) => {
-              if (response.reason) throw response
-
-              setNewTasks(response.content)
-            })
-            .catch((err) => {
-              setNewToast(err.message)
-            })
+          getBoardTasks(boardId, taskFilter).then((response) => {
+            setNewTasks(response.content)
+          })
         }
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+      },
+    )
   }
 
   const deleteFunc = () => {
-    deleteSingleTask(boardId, taskListId, taskData.id, taskData)
-      .then((response) => {
-        if (response.reason) throw response
-
+    deleteSingleTask(boardId, taskListId, taskData.id, taskData).then(
+      (response) => {
         const newTasks = tasks.filter(({ id }) => id !== response.content[0].id)
         setNewTasks(newTasks)
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+      },
+    )
     setForm(false)
   }
 

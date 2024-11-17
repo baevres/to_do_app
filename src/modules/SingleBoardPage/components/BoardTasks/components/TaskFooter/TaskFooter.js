@@ -5,8 +5,6 @@ import BoardDataContext from '../../../../context/BoardDataContext'
 import TaskListDataContext from '../../context/TaskListDataContext'
 import TasksContext from '../../../../context/TasksContext'
 
-import { ToastContext } from '../../../../../ToastStack'
-
 import './TaskFooter.css'
 import { Plus, Close } from '../../../../../../UI'
 
@@ -14,7 +12,6 @@ const TaskFooter = () => {
   const [isForm, setForm] = useState(false)
   const [value, setValue] = useState()
   const { createTask } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { boardId } = useContext(BoardDataContext)
   const { taskListId } = useContext(TaskListDataContext)
   const { tasks, setNewTasks } = useContext(TasksContext)
@@ -31,16 +28,10 @@ const TaskFooter = () => {
       title: value,
       checked: false,
     }
-    createTask(boardId, taskListId, payload)
-      .then((response) => {
-        if (response.reason) throw response
-
-        const newTasks = [...tasks, response.content[0]]
-        setNewTasks(newTasks)
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    createTask(boardId, taskListId, payload).then((response) => {
+      const newTasks = [...tasks, response.content[0]]
+      setNewTasks(newTasks)
+    })
 
     setValue('')
     setForm(false)

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 
-const FormTemplate = (props) => {
-  const { formOpts, fieldsOpts, validationFunc, submitFunc } = props
+const FormTemplate = ({ formOpts, fieldsOpts, validationFunc, submitFunc }) => {
+  const [isSubmit, setIsSubmit] = useState(false)
+
   const setInitialValues = (fieldsOpts) => {
     const initialValues = {}
     fieldsOpts.forEach(({ id }) => {
@@ -69,13 +71,22 @@ const FormTemplate = (props) => {
       initialValues={initialValues}
       validateOnBlur={false}
       validate={async (values) => {
-        const errors = await validationFunc(values)
-        return errors
+        if (isSubmit) {
+          const errors = await validationFunc(values)
+          return errors
+        }
+        return {}
       }}
       onSubmit={async (values, { resetForm, setErrors }) => {
-        await submitFunc(values)
+        setIsSubmit(true)
+        const errors = await validationFunc(values)
+        setErrors(errors)
 
-        resetForm()
+        if (Object.keys(errors).length === 0) {
+          await submitFunc(values)
+          resetForm()
+          setIsSubmit(false)
+        }
       }}
     >
       {({ errors, touched, handleSubmit }) => (

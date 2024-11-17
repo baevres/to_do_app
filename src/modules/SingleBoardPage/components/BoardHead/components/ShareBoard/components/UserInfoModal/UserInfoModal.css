@@ -39,6 +39,7 @@
   height: 86px;
   width: 86px;
   font-size: 43px;
+  margin-right: 10px;
 }
 
 .share-board .user-info_account .account-icon:hover {

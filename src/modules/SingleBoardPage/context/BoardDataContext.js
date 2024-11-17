@@ -2,6 +2,8 @@ import { createContext } from 'react'
 
 const BoardDataContext = createContext({
   boardId: null,
+  owner: {},
+  isOwner: null,
   boardTitle: '',
   boardList: [],
   taskLists: [],
@@ -9,6 +11,8 @@ const BoardDataContext = createContext({
   setNewBoardTitle: () => {},
   setNewBoardList: () => {},
   setTaskLists: () => {},
+  setIsOwner: () => {},
+  setOwner: () => {},
 })
 
 export default BoardDataContext

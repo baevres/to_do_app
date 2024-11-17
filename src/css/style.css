@@ -18,6 +18,10 @@
   padding: 10px 40px 10px 0;
 }
 
+.menu.menu-board {
+  padding-right: 20px;
+}
+
 .menu a {
   color: black;
   text-decoration: none;
@@ -28,6 +32,14 @@
 
 .menu a:hover {
   color: rgb(62, 106, 250);
+}
+
+.menu.menu-board a {
+  color: #fff;
+}
+
+.menu.menu-board a:hover {
+  color: #dfe1e6;
 }
 
 .menu a.selected-link {

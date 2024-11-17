@@ -1,82 +1,50 @@
 import { useEffect, useState, useContext, useRef } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useBoardsService, NewBoardModal } from '../../../BoardsPage'
-import { ToastContext } from '../../../ToastStack'
 import BoardDataContext from '../../context/BoardDataContext'
+import UserDataContext from '../../../../context/UserDataContext'
+import useSharedBoardsService from '../../../../services/useSharedBoardsService'
 
-import { Plus, DeleteBasket } from '../../../../UI'
+import { Plus, DeleteBasket, Leave } from '../../../../UI'
 import './BoardSideMenu.css'
 
 const BoardSideMenu = () => {
-  const { board } = useParams()
-  const { getBoards, createBoard, deleteBoard } = useBoardsService()
-  const { setNewToast } = useContext(ToastContext)
-  const { boardList, setNewBoardList, boardId, boardTitle } =
+  const { getBoards, createBoard } = useBoardsService()
+  const { boardList, setNewBoardList, boardTitle } =
     useContext(BoardDataContext)
   const [isModal, setModal] = useState(false)
+  const [sharedBoards, setSharedBoards] = useState([])
+  const { getSharedBoards } = useSharedBoardsService()
 
   const modalRef = useRef(null)
-  const navigate = useNavigate()
 
   const getAllBoards = () => {
-    getBoards()
-      .then((response) => {
-        if (response.reason) throw response
+    getBoards().then((response) => {
+      setNewBoardList(response.content)
+    })
 
-        setNewBoardList(response.content)
+    getSharedBoards().then((response) => {
+      const boards = response.content.map((board) => {
+        return board.boards
       })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+
+      setSharedBoards(boards)
+    })
   }
 
   useEffect(() => {
     getAllBoards()
   }, [boardTitle])
 
-  const onRemoveBoard = (id) => {
-    deleteBoard(id, { id })
-      .then((response) => {
-        if (response.reason) throw response
-
-        if (+id === +boardId) navigate('/')
-        else getAllBoards()
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
-  }
-
-  const userBoardsList = boardList.map(({ id, title }, i) => {
-    const newBoardParam = `${title}-${id}`
-    return (
-      <li key={title + i} className={+boardId === +id ? 'selected-board' : ''}>
-        <Link to={`/boards/${newBoardParam}`}>
-          <div className="board-img"></div>
-          {title}
-        </Link>
-        <div className="remove-board" onClick={() => onRemoveBoard(id)}>
-          <DeleteBasket />
-        </div>
-      </li>
-    )
-  })
-
   const onClose = () => {
     setModal(false)
   }
 
   const submitFunc = async ({ title }) => {
-    createBoard({ title })
-      .then((response) => {
-        if (response.reason) throw response
-
-        getAllBoards()
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    createBoard({ title }).then((response) => {
+      getAllBoards()
+    })
 
     onClose()
   }
@@ -97,8 +65,81 @@ const BoardSideMenu = () => {
             />
           ) : null}
         </div>
-        <ul className="side-menu_boards-list">{userBoardsList}</ul>
+        <ul className="side-menu_boards-list">
+          <UserBoardsList boards={boardList} getAllBoards={getAllBoards} />
+        </ul>
       </div>
+      {sharedBoards.length > 0 ? (
+        <SharedBoards boards={sharedBoards} getAllBoards={getAllBoards} />
+      ) : null}
+    </div>
+  )
+}
+
+const UserBoardsList = ({ boards, getAllBoards }) => {
+  const { boardId, boardList } = useContext(BoardDataContext)
+  const { userData } = useContext(UserDataContext)
+  const { deleteBoard } = useBoardsService()
+  const { deleteInvitedUser } = useSharedBoardsService()
+  const navigate = useNavigate()
+
+  const onRemoveBoard = (id) => {
+    deleteBoard(id, { id }).then((response) => {
+      if (+id === +boardId) navigate('/')
+      else getAllBoards()
+    })
+  }
+
+  const onRemoveUserFromBoard = (id) => {
+    const payload = { board_id: id, user_id: userData.id }
+    deleteInvitedUser(id, payload).then((response) => {
+      if (+id === +boardId) navigate('/')
+      else getAllBoards()
+    })
+  }
+
+  return boards.map(({ id, title }, i) => {
+    const newBoardParam = `${title}-${id}`
+    const checkId = boardList.filter((board) => +board.id === +id).length > 0
+    const btnTitle = checkId ? 'Remove the board' : 'Leave the board'
+
+    const ActionButton = checkId ? (
+      <ActionBtn actionFunc={() => onRemoveBoard(id)}>
+        <DeleteBasket />
+      </ActionBtn>
+    ) : (
+      <ActionBtn actionFunc={() => onRemoveUserFromBoard(id)}>
+        <Leave />
+      </ActionBtn>
+    )
+
+    return (
+      <li key={title + i} className={+boardId === +id ? 'selected-board' : ''}>
+        <Link to={`/boards/${newBoardParam}`}>
+          <div className="board-img"></div>
+          {title}
+        </Link>
+        <div title={btnTitle}>{ActionButton}</div>
+      </li>
+    )
+  })
+}
+
+const ActionBtn = ({ children, actionFunc }) => {
+  return (
+    <div className="remove-board" onClick={actionFunc}>
+      {children}
+    </div>
+  )
+}
+
+const SharedBoards = ({ boards, getAllBoards }) => {
+  return (
+    <div className="side-menu_user-boards shared">
+      <div>Shared boards</div>
+      <ul className="side-menu_boards-list">
+        <UserBoardsList boards={boards} getAllBoards={getAllBoards} />
+      </ul>
     </div>
   )
 }

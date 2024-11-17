@@ -1,20 +1,17 @@
-import useHttp from '../../../hooks/httpHook.js'
-import logout from '../../../services/logout.js'
+import { useContext } from 'react'
+
+import useHttp from '../../../hooks/httpHook'
+import logout from '../../../services/useLogout'
+import getHeaders from '../../../utils/getHeaders'
+
+import ControlStateContext from '../../../context/ControlStateContext'
 
 const useUserVerification = () => {
   let loggedIn = false
   const baseUrl = `http://localhost:5555/api/user`
-  const { request } = useHttp()
-
-  const getHeaders = () => {
-    const accessToken = JSON.parse(localStorage.getItem('accessToken'))
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    }
-
-    return headers
-  }
+  const { request, loading } = useHttp()
+  const { getIsRefresh, setIsRefresh, setIsLoading } =
+    useContext(ControlStateContext)
 
   const getUserByCreds = async (body) => {
     const url = baseUrl + '/auth'
@@ -34,13 +31,7 @@ const useUserVerification = () => {
       : ''
     const url = `${baseUrl}/user-data${queryParams}`
     const data = await request(url, 'GET', null, getHeaders())
-    const newData = await refreshTokenAndMakeNewRequest(
-      data,
-      url,
-      'GET',
-      null,
-      getHeaders,
-    )
+    const newData = await refreshTokenAndMakeNewRequest(data, url, 'GET', null)
     return newData
   }
 
@@ -71,21 +62,47 @@ const useUserVerification = () => {
     }
   }
 
-  const refreshTokenAndMakeNewRequest = async (
-    data,
-    url,
-    method,
-    body,
-    getHeaders,
-  ) => {
-    if (data.reason === 'Unauthorized') {
-      const res = await requestRefreshToken()
-      if (res.type) return res
-
-      return await request(url, method, body, getHeaders())
+  const refreshTokenAndMakeNewRequest = async (data, url, method, body) => {
+    const makeNewRequest = async () => {
+      setIsLoading(true)
+      const newData = await request(url, method, body, getHeaders())
+      setIsLoading(false)
+      return newData
     }
-    return data
+
+    if (data.reason === 'Unauthorized' && !getIsRefresh()) {
+      setIsRefresh(true)
+      const res = await requestRefreshToken()
+      setIsRefresh(false)
+      if (res.type) {
+        return res
+      }
+
+      return makeNewRequest()
+    } else if (data.reason === 'Unauthorized' && getIsRefresh()) {
+      // let i = 0
+      // while (getIsRefresh()) {
+      //   i += 1
+      //   if (!getIsRefresh() || i > 300) {
+      //     break
+      //   }
+      // }
+      // return makeNewRequest()
+      return setTimeout(makeNewRequest, 500)
+    } else return data
   }
+
+  // const getIsRefresh = () => {
+  //   if (!localStorage.getItem('isRefresh'))
+  //     localStorage.setItem('isRefresh', JSON.stringify(isRefresh))
+  //   isRefresh = JSON.parse(localStorage.getItem('isRefresh'))
+  //   return isRefresh
+  // }
+
+  // const setIsRefresh = (newIsRefresh) => {
+  //   localStorage.setItem('isRefresh', JSON.stringify(newIsRefresh))
+  //   isRefresh = newIsRefresh
+  // }
 
   const setLoggedIn = (result) => {
     localStorage.setItem('loggedIn', JSON.stringify(result))
@@ -115,6 +132,7 @@ const useUserVerification = () => {
     getLoggedIn,
     verifyUser,
     refreshTokenAndMakeNewRequest,
+    loading,
   }
 }
 

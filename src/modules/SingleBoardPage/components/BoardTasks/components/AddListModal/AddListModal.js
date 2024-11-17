@@ -4,14 +4,12 @@ import FormTemplate from '../../../../../FormTemplate'
 
 import useTasksService from '../../../../services/useTasksService'
 import BoardDataContext from '../../../../context/BoardDataContext'
-import { ToastContext } from '../../../../../ToastStack'
 
 import './AddListModal.css'
 import { Close } from '../../../../../../UI'
 
 const AddListModal = ({ setOpenModal }) => {
   const { createTaskList } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { boardId, taskLists, setTaskLists } = useContext(BoardDataContext)
   const modalRef = useRef(null)
 
@@ -40,17 +38,11 @@ const AddListModal = ({ setOpenModal }) => {
   }
   const submitFunc = ({ newList }) => {
     const payload = { title: newList }
-    createTaskList(boardId, payload)
-      .then((response) => {
-        if (response.reason) throw response
-
-        const newTaskLists = [...taskLists, response.content[0]]
-        setTaskLists(newTaskLists)
-        setOpenModal(false)
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    createTaskList(boardId, payload).then((response) => {
+      const newTaskLists = [...taskLists, response.content[0]]
+      setTaskLists(newTaskLists)
+      setOpenModal(false)
+    })
   }
 
   const handleClickOutside = (event) => {

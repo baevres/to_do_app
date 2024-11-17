@@ -5,7 +5,6 @@ import ListActions from '../ListActions/ListActions'
 import useTasksService from '../../../../../../services/useTasksService'
 import BoardDataContext from '../../../../../../context/BoardDataContext'
 import TaskListDataContext from '../../../../context/TaskListDataContext'
-import { ToastContext } from '../../../../../../../ToastStack'
 
 import './TaskHead.css'
 
@@ -23,7 +22,6 @@ const EditListTitleForm = () => {
   const [isForm, setForm] = useState(false)
   const [value, setValue] = useState(taskListTitle)
   const { updateTaskList } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { boardId } = useContext(BoardDataContext)
 
   let newTaskListTitle = value
@@ -38,17 +36,11 @@ const EditListTitleForm = () => {
       title: value,
       board_id: boardId,
     }
-    updateTaskList(boardId, taskListId, payload)
-      .then((response) => {
-        if (response.reason) throw response
-
-        const resp = response.content[0].title
-        setValue(resp)
-        newTaskListTitle = resp
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    updateTaskList(boardId, taskListId, payload).then((response) => {
+      const resp = response.content[0].title
+      setValue(resp)
+      newTaskListTitle = resp
+    })
     setForm(false)
   }
 

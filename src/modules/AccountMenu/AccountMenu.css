@@ -1,0 +1,62 @@
+.account-wrapper {
+  margin-left: 15px;
+}
+
+.account-wrapper .user-info_wrapper {
+  top: 47px;
+  right: 5px;
+  background-color: #fff;
+}
+
+.account-modal .user-info_content {
+  padding: 12px;
+  padding-bottom: 0;
+}
+
+.account-modal_title {
+  text-transform: uppercase;
+  color: #626f86;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+  padding: 0 8px;
+}
+
+.account-modal .account-card {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.account-card .account-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 22px;
+  margin-right: 8px;
+}
+
+.account-modal .account-info {
+  margin-top: 0;
+}
+
+.account-modal hr {
+  background-color: #091e4224;
+  margin: 8px;
+}
+
+.account-modal .logout {
+  padding: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #172b4d;
+}
+
+.account-modal .logout:hover {
+  cursor: pointer;
+  background-color: #091e420f;
+}
+
+.account-modal .logout > div {
+  padding-left: 12px;
+}

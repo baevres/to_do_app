@@ -10,9 +10,69 @@ import Error404 from '../Error404'
 import ToastStack, { ToastContext } from '../ToastStack'
 
 import UserDataContext from '../../context/UserDataContext'
+import LoggedInContext from '../../context/LoggedInContext'
+import ControlStateContext from '../../context/ControlStateContext'
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState()
+  const [loggedInState, setLoggedInState] = useState({
+    loggedIn: false,
+    setLoggedIn(loggedIn) {
+      setLoggedInState((loggedInState) => {
+        return {
+          ...loggedInState,
+          loggedIn,
+        }
+      })
+    },
+  })
+  const [controlState, setControlState] = useState({
+    isError: false,
+    isLoading: false,
+    isRefresh: false,
+    setIsError: (isError) => {
+      setControlState((controlState) => {
+        return {
+          ...controlState,
+          isError,
+        }
+      })
+    },
+    getIsLoading() {
+      if (!localStorage.getItem('isLoading'))
+        localStorage.setItem(
+          'isLoading',
+          JSON.stringify(controlState.isLoading),
+        )
+      return JSON.parse(localStorage.getItem('isLoading'))
+    },
+    setIsLoading(isLoading) {
+      localStorage.setItem('isLoading', JSON.stringify(isLoading))
+      setControlState((controlState) => {
+        return {
+          ...controlState,
+          isLoading,
+        }
+      })
+    },
+    getIsRefresh() {
+      if (!localStorage.getItem('isRefresh'))
+        localStorage.setItem(
+          'isRefresh',
+          JSON.stringify(controlState.isRefresh),
+        )
+      console.log(JSON.parse(localStorage.getItem('isRefresh')))
+      return JSON.parse(localStorage.getItem('isRefresh'))
+    },
+    setIsRefresh(isRefresh) {
+      localStorage.setItem('isRefresh', JSON.stringify(isRefresh))
+      setControlState((controlState) => {
+        return {
+          ...controlState,
+          isRefresh,
+        }
+      })
+    },
+  })
   const [toast, setToast] = useState({
     id: null,
     isToast: false,
@@ -57,26 +117,21 @@ const App = () => {
     }
     const loggedIn = JSON.parse(localStorage.getItem('loggedIn'))
     localStorage.setItem('loggedIn', JSON.stringify(loggedIn))
-    setLoggedIn(loggedIn)
+    loggedInState.setLoggedIn(loggedIn)
   }
 
   useEffect(() => {
-    if (loggedIn)
-      getUserData()
-        .then((response) => {
-          if (response.reason) throw response
-
-          setUserState((userState) => {
-            return {
-              ...userState,
-              userData: response.content[0],
-            }
-          })
+    if (loggedInState.loggedIn)
+      getUserData().then((response) => {
+        // console.log(response)
+        setUserState((userState) => {
+          return {
+            ...userState,
+            userData: response.content[0],
+          }
         })
-        .catch((err) => {
-          toast.setNewToast(err.message)
-        })
-  }, [])
+      })
+  }, [loggedInState.loggedIn])
 
   useMemo(() => {
     isLoggedIn()
@@ -90,25 +145,33 @@ const App = () => {
   }, [toast.isToast, toast.id])
 
   return (
-    <UserDataContext.Provider value={userState}>
-      <ToastContext.Provider value={toast}>
-        <Router>
-          <NavLinks isLoggedIn={loggedIn} />
-          <div className="app">
-            <Routes>
-              <Route
-                path="/"
-                element={loggedIn ? <BoardsPage /> : <LoginPage />}
-              />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/boards/:board" element={<SingleBoardPage />} />
-              <Route path="*" element={<Error404 />} />
-            </Routes>
-            {toastList.length > 0 ? <ToastStack toastList={toastList} /> : null}
-          </div>
-        </Router>
-      </ToastContext.Provider>
-    </UserDataContext.Provider>
+    <ControlStateContext.Provider value={controlState}>
+      <LoggedInContext.Provider value={loggedInState}>
+        <UserDataContext.Provider value={userState}>
+          <ToastContext.Provider value={toast}>
+            <Router>
+              <NavLinks />
+              <div className="app">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      loggedInState.loggedIn ? <BoardsPage /> : <LoginPage />
+                    }
+                  />
+                  <Route path="/signup" element={<SignUpPage />} />
+                  <Route path="/boards/:board" element={<SingleBoardPage />} />
+                  <Route path="*" element={<Error404 />} />
+                </Routes>
+                {toastList.length > 0 ? (
+                  <ToastStack toastList={toastList} />
+                ) : null}
+              </div>
+            </Router>
+          </ToastContext.Provider>
+        </UserDataContext.Provider>
+      </LoggedInContext.Provider>
+    </ControlStateContext.Provider>
   )
 }
 

@@ -1,8 +1,10 @@
 import useHttp from '../../../hooks/httpHook.js'
+import getResultOrError from '../../../utils/getResultOrError.js'
 
 const useUserRegistration = () => {
   const baseUrl = `http://localhost:5555/api`
   const { request } = useHttp()
+  const { getResult } = getResultOrError()
 
   const getUsersUniqueData = async (value, type) => {
     const url = baseUrl + `/user?${type}=${value}`
@@ -19,7 +21,7 @@ const useUserRegistration = () => {
   const checkUniqueData = async (value, type = 'email') => {
     const res = await getUsersUniqueData(value, type)
 
-    return res
+    return getResult(res)
   }
 
   const createNewUser = async (values) => {
@@ -31,7 +33,7 @@ const useUserRegistration = () => {
     } catch (err) {
       return err
     }
-    return res
+    return getResult(res)
   }
 
   return { checkUniqueData, createNewUser }

@@ -1,24 +1,29 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useLayoutEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
 import BoardSideMenu from '../BoardSideMenu/BoardSideMenu'
 import BoardHead from '../BoardHead'
 import BoardTasks from '../BoardTasks'
 
+import { useUserVerification } from '../../../LoginPage'
+import { useBoardsService } from '../../../BoardsPage'
 import useTasksService from '../../services/useTasksService'
+import UserDataContext from '../../../../context/UserDataContext'
 import BoardDataContext from '../../context/BoardDataContext'
 import TasksContext from '../../context/TasksContext'
-import { ToastContext } from '../../../ToastStack'
 
 import './SingleBoardPage.css'
 
 const SingleBoardPage = () => {
-  const { getBoardTasks } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
-
   const { board } = useParams()
+  const { getBoard } = useBoardsService()
+  const { getBoardTasks } = useTasksService()
+  const { userData, setUserData } = useContext(UserDataContext)
+  const { getUserData } = useUserVerification()
   const [boardData, setBoardData] = useState({
     boardId: board.split('-')[1],
+    owner: {},
+    isOwner: null,
     boardTitle: '',
     boardList: [],
     taskLists: [],
@@ -58,6 +63,22 @@ const SingleBoardPage = () => {
         return newBoardData
       })
     },
+    setIsOwner(isOwner) {
+      setBoardData((boardData) => {
+        return {
+          ...boardData,
+          isOwner,
+        }
+      })
+    },
+    setOwner(owner) {
+      setBoardData((boardData) => {
+        return {
+          ...boardData,
+          owner,
+        }
+      })
+    },
   })
   const [boardTasks, setTasks] = useState({
     tasks: [],
@@ -80,9 +101,10 @@ const SingleBoardPage = () => {
     },
   })
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const menu = document.querySelector('.menu')
     menu.classList.add('menu-board')
+
     return () => {
       menu.classList.remove('menu-board')
     }
@@ -106,20 +128,32 @@ const SingleBoardPage = () => {
       })
     }
 
-    getBoardTasks(newBoardId, curFilter)
-      .then((response) => {
-        if (response.reason) throw response
+    getBoard(newBoardId).then((response) => {
+      let checkBoardOwner
+      if (userData.id) {
+        checkBoardOwner = +response.content[0].user_id === +userData.id
+        boardData.setIsOwner(checkBoardOwner)
+        boardData.setOwner(response.content[0].users)
+      } else {
+        getUserData().then((userResponse) => {
+          setUserData(userResponse.content[0])
 
-        setTasks((boardTasks) => {
-          return {
-            ...boardTasks,
-            tasks: response.content,
-          }
+          checkBoardOwner =
+            +response.content[0].user_id === +userResponse.content[0].id
+          boardData.setIsOwner(checkBoardOwner)
+          boardData.setOwner(response.content[0].users)
         })
+      }
+    })
+
+    getBoardTasks(newBoardId, curFilter).then((response) => {
+      setTasks((boardTasks) => {
+        return {
+          ...boardTasks,
+          tasks: response.content,
+        }
       })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    })
   }, [board, boardTasks.taskFilter])
 
   return (

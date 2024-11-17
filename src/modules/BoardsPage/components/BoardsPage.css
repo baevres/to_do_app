@@ -1,9 +1,18 @@
+.boards {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
 .board-section {
   width: 88%;
 }
 
 .board-section > div {
   position: relative;
+}
+
+.shared-boards {
+  margin-top: 30px;
 }
 
 .board-section__header-name {
@@ -24,7 +33,7 @@
   margin: 0 2% 2% 0;
   padding: 0;
   transform: translate(0);
-  width: 23.5%;
+  width: 22.5%;
   border-radius: 3px;
 }
 

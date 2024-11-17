@@ -1,0 +1,25 @@
+.accont-wrapper {
+  position: relative;
+  display: flex;
+  margin-right: 10px;
+}
+
+.accont-wrapper > div {
+  position: relative;
+}
+
+.accont-wrapper .up-arrow {
+  position: absolute;
+  top: 16px;
+  right: 1px;
+}
+
+.accont-wrapper .up-arrow:hover {
+  cursor: pointer;
+}
+
+.accont-wrapper .up-arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: #ffff;
+}

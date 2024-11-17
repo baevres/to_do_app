@@ -1,8 +1,13 @@
+import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
-import logout from '../../services/logout.js'
+import AccountMenu from '../AccountMenu'
 
-const NavLinks = ({ isLoggedIn }) => {
+import LoggedInContext from '../../context/LoggedInContext.js'
+
+const NavLinks = () => {
+  const { loggedIn } = useContext(LoggedInContext)
+
   const routes = {
     publicLink: [
       {
@@ -19,16 +24,12 @@ const NavLinks = ({ isLoggedIn }) => {
         url: '/',
         title: 'ToDo Boards',
       },
-      {
-        url: '/logout',
-        title: 'Log out',
-      },
     ],
     404: { title: 'Not Found' },
   }
 
   const { publicLink, privatLink } = routes
-  const visibleLinks = isLoggedIn ? privatLink : publicLink
+  const visibleLinks = loggedIn ? privatLink : publicLink
 
   const generateNavLinks = (links) => {
     return links.map(({ url, title }) => {
@@ -43,9 +44,6 @@ const NavLinks = ({ isLoggedIn }) => {
             }
             return ''
           }}
-          onClick={() => {
-            if (title === 'Log out') logout()
-          }}
         >
           {title}
         </NavLink>
@@ -54,7 +52,12 @@ const NavLinks = ({ isLoggedIn }) => {
   }
   const links = generateNavLinks(visibleLinks)
 
-  return <nav className="menu">{links}</nav>
+  return (
+    <nav className="menu">
+      {links}
+      <AccountMenu />
+    </nav>
+  )
 }
 
 export default NavLinks

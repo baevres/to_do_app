@@ -6,7 +6,6 @@ import Tasks from '../Tasks/Tasks'
 import TaskFooter from '../TaskFooter/TaskFooter'
 
 import useTasksService from '../../../../services/useTasksService'
-import { ToastContext } from '../../../../../ToastStack'
 import BoardDataContext from '../../../../context/BoardDataContext'
 import TaskListDataContext from '../../context/TaskListDataContext'
 
@@ -16,19 +15,12 @@ import { Plus } from '../../../../../../UI'
 const BoardLists = () => {
   const [isOpenModal, setOpenModal] = useState(false)
   const { getTaskLists } = useTasksService()
-  const { setNewToast } = useContext(ToastContext)
   const { boardId, taskLists, setTaskLists } = useContext(BoardDataContext)
 
   useEffect(() => {
-    getTaskLists(boardId)
-      .then((response) => {
-        if (response.reason) throw response
-
-        setTaskLists(response.content)
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    getTaskLists(boardId).then((response) => {
+      setTaskLists(response.content)
+    })
   }, [boardId, taskLists.length])
 
   const AddListContent = isOpenModal ? (

@@ -4,8 +4,16 @@ import UserDataContext from '../../context/UserDataContext'
 
 import './AccountIcon.css'
 
-const AccountIcon = () => {
+const AccountIcon = ({ user }) => {
   const { userData } = useContext(UserDataContext)
+
+  if (user) {
+    return (
+      <div className="account-icon">
+        <div>{user.name[0]}</div>
+      </div>
+    )
+  }
 
   return userData.name ? (
     <div className="account-icon">

@@ -5,7 +5,7 @@ import NewBoardModal from './NewBoardModal'
 import Loader from '../../Loader'
 
 import useBoardsService from '../services/useBoardsService'
-import { ToastContext } from '../../ToastStack'
+import useSharedBoardsService from '../../../services/useSharedBoardsService'
 
 import useHttp from '../../../hooks/httpHook'
 
@@ -14,9 +14,10 @@ import './BoardsPage.css'
 const BoardsPage = () => {
   const [isOpenModal, setOpenModal] = useState(false)
   const [userBoards, setUserBoards] = useState([])
+  const [userSharedBoards, setUserSharedBoards] = useState([])
   const { getBoards, createBoard } = useBoardsService()
   const { loading } = useHttp()
-  const { setNewToast } = useContext(ToastContext)
+  const { getSharedBoards } = useSharedBoardsService()
 
   const modalRef = useRef(null)
   const newBoardButtonRef = useRef(null)
@@ -41,14 +42,10 @@ const BoardsPage = () => {
   }
 
   const submitFunc = async ({ title }) => {
-    createBoard({ title })
-      .then((boards) => {
-        const newBoard = boards.content[0]
-        setUserBoards((userBoards) => [...userBoards, newBoard])
-      })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+    createBoard({ title }).then((boards) => {
+      const newBoard = boards.content[0]
+      setUserBoards((userBoards) => [...userBoards, newBoard])
+    })
 
     onCloseModal()
   }
@@ -62,19 +59,21 @@ const BoardsPage = () => {
 
   // user boards
   useEffect(() => {
-    getBoards()
-      .then((response) => {
-        if (response.reason) throw response
+    getBoards().then((response) => {
+      setUserBoards(response.content)
+    })
 
-        setUserBoards(response.content)
+    getSharedBoards().then((response) => {
+      const boards = response.content.map((board) => {
+        return board.boards
       })
-      .catch((err) => {
-        setNewToast(err.message)
-      })
+
+      setUserSharedBoards(boards)
+    })
   }, [])
 
-  const setUserBoardsElems = () => {
-    const boards = userBoards.map(({ id, title }, i) => {
+  const setUserBoardsElems = (boardList = userBoards, isCreate = true) => {
+    const boards = boardList.map(({ id, title }, i) => {
       return (
         <li
           key={i + title}
@@ -92,18 +91,20 @@ const BoardsPage = () => {
 
     return (
       <ul className="board-section__list">
-        {userBoards.length > 0 ? boards : null}
-        <li
-          className="board-section__list-item new-board"
-          ref={newBoardButtonRef}
-          onClick={() => {
-            setOpenModal(true)
-          }}
-        >
-          <div className="board-content">
-            <span>Create new board</span>
-          </div>
-        </li>
+        {boardList.length > 0 ? boards : null}
+        {isCreate ? (
+          <li
+            className="board-section__list-item new-board"
+            ref={newBoardButtonRef}
+            onClick={() => {
+              setOpenModal(true)
+            }}
+          >
+            <div className="board-content">
+              <span>Create new board</span>
+            </div>
+          </li>
+        ) : null}
       </ul>
     )
   }
@@ -112,17 +113,31 @@ const BoardsPage = () => {
   return (
     <div className="container">
       <h1>Todo Boards</h1>
-      <div className="board-section">
-        <h3 className="board-section__header-name">Your Boards</h3>
-        <div>{loading ? <Loader /> : setUserBoardsElems()}</div>
+      <div className="boards">
+        <div className="board-section">
+          <h3 className="board-section__header-name">Your Boards</h3>
+          <div>{loading ? <Loader /> : setUserBoardsElems()}</div>
+        </div>
+        {userSharedBoards.length > 0 ? (
+          <div className="board-section shared-boards">
+            <h3 className="board-section__header-name">Shared Boards</h3>
+            <div>
+              {loading ? (
+                <Loader />
+              ) : (
+                setUserBoardsElems(userSharedBoards, false)
+              )}
+            </div>
+          </div>
+        ) : null}
+        {isOpenModal ? (
+          <NewBoardModal
+            onClose={onCloseModal}
+            modalRef={modalRef}
+            submitFunc={submitFunc}
+          />
+        ) : null}
       </div>
-      {isOpenModal ? (
-        <NewBoardModal
-          onClose={onCloseModal}
-          modalRef={modalRef}
-          submitFunc={submitFunc}
-        />
-      ) : null}
     </div>
   )
 }

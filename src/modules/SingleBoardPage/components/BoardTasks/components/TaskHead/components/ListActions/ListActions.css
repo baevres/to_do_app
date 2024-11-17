@@ -27,6 +27,20 @@
   height: 16px;
 }
 
+.list-actions_close,
+.back-arrow {
+  height: 26px;
+  width: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list-actions_close svg {
+  width: 22px;
+  height: 22px;
+}
+
 .list-actions_wrapper {
   position: absolute;
   background-color: #ffffff;
@@ -78,14 +92,6 @@
   height: 1px;
 }
 
-.back-arrow {
-  display: flex;
-  justify-content: center;
-  align-self: center;
-  height: 100%;
-  width: 100%;
-}
-
 .move-list_form {
   margin-top: 10px;
 }
@@ -107,6 +113,10 @@
 .move-list_form select {
   width: 100%;
   height: 40px;
+  font-size: 18px;
+}
+
+.move-list_form .input-label {
   font-size: 18px;
 }
 
